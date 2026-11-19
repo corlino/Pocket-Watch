@@ -1,0 +1,337 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+/*
+ * Pocket Watch design tokens.
+ * Source: docs/styleguide.md (§2, §3, §4, §5, §12, §16) reconciled with docs/references.png.
+ * Dark is the default theme. Light is applied with <html data-theme="light">.
+ * Components use semantic tokens only — never raw hex values.
+ */
+
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+@custom-variant light (&:where([data-theme="light"], [data-theme="light"] *));
+
+:root,
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  /* Backgrounds */
+  --pw-background: #082f32;
+  --pw-background-secondary: #093a3d;
+  --pw-background-elevated: #0d474a;
+  --pw-background-overlay: #061f21;
+
+  /* Surfaces */
+  --pw-surface: #10494c;
+  --pw-surface-secondary: #15585b;
+  --pw-surface-tertiary: #1b6467;
+  --pw-surface-input: #205e61;
+  --pw-surface-hover: #22686b;
+  --pw-surface-active: #287478;
+
+  /* Brand */
+  --pw-brand: #28c6d6;
+  --pw-brand-hover: #3bd4e2;
+  --pw-brand-active: #159dad;
+  --pw-brand-secondary: #59dfe4;
+  --pw-brand-soft: #174f54;
+
+  /* Text */
+  --pw-text-primary: #f2faf9;
+  --pw-text-secondary: #c1d8d8;
+  --pw-text-muted: #9dbdbe; /* style guide #91B2B3, lightened for AA on cards */
+  --pw-text-disabled: #64888a;
+  --pw-text-inverse: #07383b;
+
+  /* Financial semantics */
+  --pw-income: #66d9bd;
+  --pw-expense: #ff9686; /* style guide #FF8B7B, lightened for AA */
+  --pw-neutral: #d5e4e3;
+  --pw-positive: #67ddb9;
+  --pw-negative: #ff9686;
+  --pw-warning: #f4cf67;
+  --pw-exceeded: #ff9686;
+
+  /* Chart / category palette */
+  --pw-chart-cyan: #39d5e4;
+  --pw-chart-yellow: #f4d16a;
+  --pw-chart-mint: #6cd8bc;
+  --pw-chart-coral: #ff927e;
+  --pw-chart-purple: #a995e8;
+  --pw-chart-blue: #70aeeb;
+  --pw-chart-muted: #71999a;
+
+  /* Lines and elevation */
+  --pw-border: rgba(111, 206, 204, 0.12);
+  --pw-border-strong: rgba(111, 206, 204, 0.24);
+  --pw-shadow-card: 0 4px 16px rgba(0, 15, 16, 0.18);
+  --pw-shadow-float: 0 6px 20px rgba(0, 15, 16, 0.32);
+}
+
+[data-theme="light"] {
+  color-scheme: light;
+
+  --pw-background: #f1f7f6;
+  --pw-background-secondary: #e9f2f1;
+  --pw-background-elevated: #ffffff;
+  --pw-background-overlay: #0b2c2e;
+
+  --pw-surface: #ffffff;
+  --pw-surface-secondary: #e7f1f0;
+  --pw-surface-tertiary: #dcebe9;
+  --pw-surface-input: #f2f7f6;
+  --pw-surface-hover: #e2eeed;
+  --pw-surface-active: #d3e7e5;
+
+  --pw-brand: #067a86; /* style guide #078E9C, darkened for AA */
+  --pw-brand-hover: #056d78;
+  --pw-brand-active: #045c66;
+  --pw-brand-secondary: #0a9fa6;
+  --pw-brand-soft: #d8eeee;
+
+  --pw-text-primary: #153c3d;
+  --pw-text-secondary: #466666;
+  --pw-text-muted: #557171; /* style guide #718D8D, darkened for AA */
+  --pw-text-disabled: #9ab1b1;
+  --pw-text-inverse: #ffffff;
+
+  --pw-income: #12785f; /* style guide #168D72, darkened for AA */
+  --pw-expense: #b14e3e; /* style guide #C75E50, darkened for AA */
+  --pw-neutral: #153c3d;
+  --pw-positive: #12785f;
+  --pw-negative: #b14e3e;
+  --pw-warning: #8a6210; /* style guide #A87917, darkened for AA */
+  --pw-exceeded: #b14e3e;
+
+  --pw-chart-cyan: #0b9fae;
+  --pw-chart-yellow: #c99a1c;
+  --pw-chart-mint: #1f9d7f;
+  --pw-chart-coral: #d46a58;
+  --pw-chart-purple: #7a62c9;
+  --pw-chart-blue: #3c80c4;
+  --pw-chart-muted: #7d9a9a;
+
+  --pw-border: rgba(20, 75, 76, 0.1);
+  --pw-border-strong: rgba(20, 75, 76, 0.2);
+  --pw-shadow-card: 0 3px 12px rgba(15, 55, 55, 0.07);
+  --pw-shadow-float: 0 6px 18px rgba(15, 55, 55, 0.16);
+}
+
+/* shadcn/ui variable contract, mapped onto Pocket Watch tokens. */
+:root,
+[data-theme] {
+  --background: var(--pw-background);
+  --foreground: var(--pw-text-primary);
+  --card: var(--pw-surface);
+  --card-foreground: var(--pw-text-primary);
+  --popover: var(--pw-background-elevated);
+  --popover-foreground: var(--pw-text-primary);
+  --primary: var(--pw-brand);
+  --primary-foreground: var(--pw-text-inverse);
+  --secondary: var(--pw-surface-secondary);
+  --secondary-foreground: var(--pw-text-primary);
+  --muted: var(--pw-surface-tertiary);
+  --muted-foreground: var(--pw-text-muted);
+  --accent: var(--pw-surface-hover);
+  --accent-foreground: var(--pw-text-primary);
+  --destructive: var(--pw-expense);
+  --border: var(--pw-border);
+  --input: var(--pw-surface-input);
+  --ring: var(--pw-brand);
+  --chart-1: var(--pw-chart-cyan);
+  --chart-2: var(--pw-chart-yellow);
+  --chart-3: var(--pw-chart-mint);
+  --chart-4: var(--pw-chart-coral);
+  --chart-5: var(--pw-chart-purple);
+  --sidebar: var(--pw-background-secondary);
+  --sidebar-foreground: var(--pw-text-secondary);
+  --sidebar-primary: var(--pw-brand);
+  --sidebar-primary-foreground: var(--pw-text-inverse);
+  --sidebar-accent: var(--pw-surface);
+  --sidebar-accent-foreground: var(--pw-text-primary);
+  --sidebar-border: var(--pw-border);
+  --sidebar-ring: var(--pw-brand);
+}
+
+@theme inline {
+  /* Fonts */
+  --font-sans: var(--font-inter), Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-heading: var(--font-sans);
+
+  /* shadcn colours */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  /* Pocket Watch colours */
+  --color-background-secondary: var(--pw-background-secondary);
+  --color-background-elevated: var(--pw-background-elevated);
+  --color-overlay: var(--pw-background-overlay);
+
+  --color-surface: var(--pw-surface);
+  --color-surface-secondary: var(--pw-surface-secondary);
+  --color-surface-tertiary: var(--pw-surface-tertiary);
+  --color-surface-input: var(--pw-surface-input);
+  --color-surface-hover: var(--pw-surface-hover);
+  --color-surface-active: var(--pw-surface-active);
+
+  --color-brand: var(--pw-brand);
+  --color-brand-hover: var(--pw-brand-hover);
+  --color-brand-active: var(--pw-brand-active);
+  --color-brand-secondary: var(--pw-brand-secondary);
+  --color-brand-soft: var(--pw-brand-soft);
+
+  --color-fg: var(--pw-text-primary);
+  --color-fg-secondary: var(--pw-text-secondary);
+  --color-fg-muted: var(--pw-text-muted);
+  --color-fg-disabled: var(--pw-text-disabled);
+  --color-fg-inverse: var(--pw-text-inverse);
+
+  --color-income: var(--pw-income);
+  --color-expense: var(--pw-expense);
+  --color-neutral-value: var(--pw-neutral);
+  --color-positive: var(--pw-positive);
+  --color-negative: var(--pw-negative);
+  --color-warning: var(--pw-warning);
+  --color-exceeded: var(--pw-exceeded);
+
+  --color-chart-cyan: var(--pw-chart-cyan);
+  --color-chart-yellow: var(--pw-chart-yellow);
+  --color-chart-mint: var(--pw-chart-mint);
+  --color-chart-coral: var(--pw-chart-coral);
+  --color-chart-purple: var(--pw-chart-purple);
+  --color-chart-blue: var(--pw-chart-blue);
+  --color-chart-muted: var(--pw-chart-muted);
+
+  --color-border-strong: var(--pw-border-strong);
+
+  /* Radii (style guide §5.1) */
+  --radius: 10px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
+  --radius-xl: 18px;
+  --radius-2xl: 22px;
+
+  /* Shadows (style guide §5.3) */
+  --shadow-card: var(--pw-shadow-card);
+  --shadow-float: var(--pw-shadow-float);
+
+  /*
+   * Type scale (style guide §3.2), tuned for mobile-first:
+   * nothing below 11px; essential content 12px+.
+   */
+  --text-overline: 11px;
+  --text-overline--line-height: 1.35;
+  --text-caption: 12px;
+  --text-caption--line-height: 1.4;
+  --text-body: 14px;
+  --text-body--line-height: 1.45;
+  --text-body-lg: 16px;
+  --text-body-lg--line-height: 1.45;
+  --text-h4: 16px;
+  --text-h4--line-height: 1.3;
+  --text-h3: 18px;
+  --text-h3--line-height: 1.3;
+  --text-h2: 22px;
+  --text-h2--line-height: 1.25;
+  --text-h1: 28px;
+  --text-h1--line-height: 1.2;
+  --text-display: 36px;
+  --text-display--line-height: 1.1;
+
+  /* Motion (style guide §12.1) */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --duration-press: 80ms;
+  --duration-hover: 120ms;
+  --duration-card: 150ms;
+  --duration-modal: 180ms;
+
+  /* Layout */
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+  --container-content: 1440px;
+  --spacing-sidebar: 240px;
+  --spacing-sidebar-collapsed: 76px;
+  --spacing-bottom-nav: 72px;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    @apply font-sans;
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-size: var(--text-body);
+  }
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+  :focus-visible {
+    outline: 2px solid var(--pw-brand);
+    outline-offset: 2px;
+  }
+}
+
+/* Financial figures: tabular numerals, never wrap. */
+@utility money {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
+  white-space: nowrap;
+}
+
+/* iOS safe areas */
+@utility pb-safe {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+@utility pt-safe {
+  padding-top: env(safe-area-inset-top);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

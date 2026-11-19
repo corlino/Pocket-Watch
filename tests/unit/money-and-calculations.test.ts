@@ -155,3 +155,17 @@ describe("expenses by category", () => {
     expect(m.get("b")?.toFixed(2)).toBe("3.00");
   });
 });
+
+import { niceTicks } from "@/components/charts/cash-flow-chart";
+
+describe("chart axis ticks", () => {
+  it.each([
+    [2439.32, [0, 1000, 2000, 3000]],
+    [31.36, [0, 20, 40, 60]],
+    [500, [0, 200, 400, 600]],
+    [7400, [0, 2500, 5000, 7500]],
+    [0, [0, 1, 2, 3]],
+  ])("rounds %s to readable ticks", (max, expected) => {
+    expect(niceTicks(max)).toEqual(expected);
+  });
+});

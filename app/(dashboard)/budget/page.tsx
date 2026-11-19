@@ -60,7 +60,7 @@ export default function BudgetPage({ searchParams }: PageProps<"/budget">) {
   return (
     <div className="flex flex-col gap-5">
       <PageHeader title="My Budget" />
-      <Suspense fallback={<div className="h-24" />}>
+      <Suspense fallback={<div className="h-[100px]" />}>
         <Controls searchParams={searchParams} />
       </Suspense>
       <Suspense fallback={<KpiSkeleton />}>
@@ -82,10 +82,10 @@ async function Controls({ searchParams }: { searchParams: Search }) {
   const isCurrent = monthly ? period.month === currentMonth : period.year === currentYear;
 
   return (
-    <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+    <div className="flex flex-col gap-3">
       <LinkTabs
         label="Budget period type"
-        className="md:w-64"
+        className="mx-auto w-full max-w-sm"
         items={[
           { href: hrefFor({ type: "monthly", month: monthly ? period.month : currentMonth }, tab), label: "Monthly", active: monthly },
           { href: hrefFor({ type: "yearly", year: monthly ? parts(monthRange(period.month).start).year : period.year }, tab), label: "Yearly", active: !monthly },
@@ -98,6 +98,7 @@ async function Controls({ searchParams }: { searchParams: Search }) {
         prevLabel={`Previous ${monthly ? "month" : "year"}, ${periodLabel(prev)}`}
         nextLabel={`Next ${monthly ? "month" : "year"}, ${periodLabel(next)}`}
         currentHref={hrefFor(current, tab)}
+        currentLabel={monthly ? "Back to current month" : "Back to current year"}
         isCurrent={isCurrent}
       />
     </div>

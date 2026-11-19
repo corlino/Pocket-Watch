@@ -8,6 +8,7 @@ import { EmptyState } from "@/components/shared/empty-state";
 import { PeriodNavigator } from "@/components/shared/period-navigator";
 import { KpiCard, KpiSkeleton } from "@/components/financial/kpi-card";
 import { BudgetCategoryCard } from "@/components/financial/budget-category-card";
+import { BudgetCarousel } from "@/components/financial/budget-carousel";
 import { CashFlowChart } from "@/components/charts/cash-flow-chart";
 import { AddTransactionButton } from "@/components/transactions/add-transaction-button";
 import { RecentActivity } from "@/components/transactions/recent-activity";
@@ -36,13 +37,13 @@ async function resolveMonth(searchParams: Search): Promise<{ month: MonthKey; cu
 export default function HomePage({ searchParams }: PageProps<"/home">) {
   return (
     <div className="flex flex-col gap-6 md:gap-8">
-      <Suspense fallback={<div className="h-12" />}>
+      <Suspense fallback={<div className="h-11" />}>
         <Header searchParams={searchParams} />
       </Suspense>
       <Suspense fallback={<KpiSkeleton count={3} />}>
         <Summary searchParams={searchParams} />
       </Suspense>
-      <div className="grid gap-6 md:gap-8 xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
+      <div className="grid grid-cols-1 gap-6 md:gap-8 xl:grid-cols-[minmax(0,1fr)_minmax(0,1fr)]">
         <Suspense fallback={<div className="h-48 animate-pulse rounded-lg bg-surface" />}>
           <Budgets searchParams={searchParams} />
         </Suspense>
@@ -61,18 +62,15 @@ async function Header({ searchParams }: { searchParams: Search }) {
   const { month, current } = await resolveMonth(searchParams);
   const href = (m: MonthKey) => (m === current ? "/home" : `/home?month=${m}`);
   return (
-    <div className="flex flex-wrap items-center justify-between gap-3">
-      <PeriodNavigator
-        label={formatMonthYear(monthRange(month).start)}
-        prevHref={href(shiftMonth(month, -1))}
-        nextHref={href(shiftMonth(month, 1))}
-        prevLabel={`Previous month, ${formatMonthYear(monthRange(shiftMonth(month, -1)).start)}`}
-        nextLabel={`Next month, ${formatMonthYear(monthRange(shiftMonth(month, 1)).start)}`}
-        currentHref="/home"
-        isCurrent={month === current}
-      />
-      <AddTransactionButton className="hidden md:inline-flex lg:hidden" />
-    </div>
+    <PeriodNavigator
+      label={formatMonthYear(monthRange(month).start)}
+      prevHref={href(shiftMonth(month, -1))}
+      nextHref={href(shiftMonth(month, 1))}
+      prevLabel={`Previous month, ${formatMonthYear(monthRange(shiftMonth(month, -1)).start)}`}
+      nextLabel={`Next month, ${formatMonthYear(monthRange(shiftMonth(month, 1)).start)}`}
+      currentHref="/home"
+      isCurrent={month === current}
+    />
   );
 }
 
@@ -121,7 +119,7 @@ async function Budgets({ searchParams }: { searchParams: Search }) {
   const budgetHref = month === current ? "/budget" : `/budget?month=${month}`;
 
   return (
-    <section aria-labelledby="budget-categories">
+    <section aria-labelledby="budget-categories" className="min-w-0">
       <SectionHeader
         id="budget-categories"
         title="Budget Categories"
@@ -145,14 +143,14 @@ async function Budgets({ searchParams }: { searchParams: Search }) {
           />
         </div>
       ) : (
-        // Mobile: horizontally scrollable cards (reference); desktop: grid.
-        <ul className="-mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-1 md:mx-0 md:grid md:grid-cols-2 md:overflow-visible md:px-0">
-          {overview.lines.map((line) => (
-            <li key={line.id} className="w-[78%] shrink-0 snap-start sm:w-[46%] md:w-auto">
-              <BudgetCategoryCard line={line} prefs={prefs} compact />
-            </li>
-          ))}
-        </ul>
+        <BudgetCarousel
+          seeAllHref={budgetHref}
+          cards={overview.lines.map((line) => ({
+            id: line.id,
+            name: line.category.name,
+            node: <BudgetCategoryCard line={line} prefs={prefs} />,
+          }))}
+        />
       )}
     </section>
   );
@@ -168,12 +166,21 @@ async function CashFlow({ searchParams }: { searchParams: Search }) {
   const series = monthlySeries(transactions, months).map((p) => ({
     month: p.month,
     label: formatMonthShort(p.month),
+    longLabel: formatMonthYear(monthRange(p.month as MonthKey).start),
     income: p.income.toFixed(2),
     expenses: p.expenses.toFixed(2),
   }));
   return (
-    <section aria-labelledby="cash-flow">
-      <SectionHeader id="cash-flow" title="Cash Flow Insights" />
+    <section aria-labelledby="cash-flow" className="min-w-0">
+      <SectionHeader
+        id="cash-flow"
+        title="Cash Flow Insights"
+        action={
+          <Link href="/analytics" className="inline-flex min-h-11 items-center gap-1 text-caption font-medium text-brand hover:underline">
+            View More <ChevronRight className="size-4" aria-hidden />
+          </Link>
+        }
+      />
       <div className="rounded-lg border border-border bg-surface p-4">
         <CashFlowChart data={series} currency={prefs.currency} numberFormat={prefs.numberFormat} selectedMonth={month} />
       </div>

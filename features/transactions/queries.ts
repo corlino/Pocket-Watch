@@ -106,6 +106,28 @@ export const getProfile = cache(async () => {
   return { displayName: data?.display_name ?? "Colin", notificationsSeenAt: data?.notifications_seen_at ?? null };
 });
 
+export type ScheduleWithCategory = import("./types").ScheduleSummary & {
+  transaction_type: "income" | "expense";
+  original_start_date: string;
+  category: { id: string; name: string; icon: string | null; color: string; is_archived: boolean };
+};
+
+/** Every recurring schedule, active first, soonest next date first. */
+export async function listSchedules(): Promise<ScheduleWithCategory[]> {
+  const { supabase } = await requireUser();
+  const { data, error } = await supabase
+    .from("recurring_schedules")
+    .select(
+      `id, is_active, recurrence_interval, next_scheduled_date, is_subscription, amount:amount::text, category_id, description, notes,
+       transaction_type, original_start_date,
+       category:categories!recurring_schedules_category_id_transaction_type_fkey ( id, name, icon, color, is_archived )`,
+    )
+    .order("is_active", { ascending: false })
+    .order("next_scheduled_date");
+  if (error) throw new Error(`Could not load recurring schedules: ${error.message}`);
+  return data as unknown as ScheduleWithCategory[];
+}
+
 /** Bell: transactions the scheduler created, newest first, with unread count. */
 export async function getAutoAddedTransactions(limit = 20) {
   const { supabase } = await requireUser();

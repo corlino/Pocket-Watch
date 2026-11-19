@@ -6,6 +6,8 @@ import { z } from "zod";
 import { createClient } from "@/lib/supabase/server";
 import { serverEnv } from "@/lib/env";
 import { ACTIVITY_COOKIE, HOME_PATH, LOGIN_PATH, activityCookieOptions } from "@/lib/auth/session";
+import { requireUser } from "@/lib/auth/dal";
+import { passwordProblem } from "@/lib/auth/password";
 
 export type LoginState = { error?: string } | undefined;
 
@@ -45,6 +47,43 @@ export async function login(_prev: LoginState, formData: FormData): Promise<Logi
 
   (await cookies()).set(ACTIVITY_COOKIE, "1", activityCookieOptions);
   redirect(safeNext(parsed.data.next));
+}
+
+export type ChangePasswordState =
+  | { ok: true }
+  | { ok: false; error: string; fieldErrors?: Partial<Record<"current" | "next" | "confirm", string>> }
+  | undefined;
+
+/**
+ * FR-PRO-002 / FR-SEC-005. Re-verifies the current password before changing
+ * it, so an unattended signed-in device can't be used to take over the account.
+ */
+export async function changePassword(_prev: ChangePasswordState, formData: FormData): Promise<ChangePasswordState> {
+  const current = String(formData.get("current") ?? "");
+  const next = String(formData.get("next") ?? "");
+  const confirm = String(formData.get("confirm") ?? "");
+
+  const fieldErrors: NonNullable<Extract<ChangePasswordState, { ok: false }>["fieldErrors"]> = {};
+  if (!current) fieldErrors.current = "Enter your current password.";
+  const problem = passwordProblem(next);
+  if (problem) fieldErrors.next = problem;
+  else if (next === current) fieldErrors.next = "Choose a password you aren't already using.";
+  if (!fieldErrors.next && confirm !== next) fieldErrors.confirm = "Passwords don't match.";
+  if (Object.keys(fieldErrors).length) return { ok: false, error: "Check the highlighted fields.", fieldErrors };
+
+  const { supabase } = await requireUser();
+  const { error: verifyError } = await supabase.auth.signInWithPassword({ email: serverEnv.adminAuthEmail, password: current });
+  if (verifyError) {
+    if (verifyError.status === 429) return { ok: false, error: "Too many attempts. Wait a few minutes and try again." };
+    return { ok: false, error: "Your current password isn't right.", fieldErrors: { current: "That password isn't right." } };
+  }
+
+  const { error } = await supabase.auth.updateUser({ password: next });
+  if (error) {
+    console.error("[auth] password change failed", error);
+    return { ok: false, error: "Your password couldn't be changed. Please try again." };
+  }
+  return { ok: true };
 }
 
 export async function logout() {

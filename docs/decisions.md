@@ -35,6 +35,9 @@ documents, this file wins.
 
 ## Phase 1 scope
 
+Also added: a **Profile → Recurring** screen listing every schedule with edit/stop, so a schedule stays reachable even after all its transactions are deleted.
+
+
 PRD Phase 1, plus: design tokens, app layout (sidebar + bottom navigation),
 core components, and a transaction history screen.
 

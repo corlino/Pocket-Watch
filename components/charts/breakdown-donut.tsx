@@ -74,10 +74,7 @@ export function BreakdownDonut({
       <ol className="flex flex-col gap-2.5" aria-label={`${totalLabel} by category`}>
         {items.map((i) => (
           <li key={i.id} className="flex items-center gap-3">
-            <span className="relative">
-              <CategoryIcon icon={i.icon} color={i.colorKey} size="sm" />
-              <span aria-hidden className="absolute -right-0.5 -bottom-0.5 size-2.5 rounded-full ring-2 ring-surface" style={{ background: i.colorVar }} />
-            </span>
+            <CategoryIcon icon={i.icon} color={i.colorKey} size="sm" />
             <div className="min-w-0 flex-1">
               <div className="flex items-baseline justify-between gap-2">
                 <span className="truncate text-body font-medium text-fg">{i.name}</span>

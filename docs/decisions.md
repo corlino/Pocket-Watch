@@ -33,6 +33,18 @@ documents, this file wins.
 | Date format | MM/DD/YYYY default (DD/MM/YYYY and YYYY-MM-DD available in Profile). |
 | Timezone | `America/Vancouver`. |
 
+## Phase 2 notes
+
+- **Budget totals:** "Total Spent" and utilisation cover budgeted categories
+  only, so utilisation compares like with like. Spending in unbudgeted
+  categories is shown separately ("Plus $X spent in categories without a
+  budget" and a "Without a budget" list) and still counts in all expense
+  totals and analytics (FR-BUD-010).
+- **Selected month** travels in the URL (`?month=YYYY-MM`) between Home,
+  Budget and Transactions; yearly budgets use `?period=yearly&year=YYYY`.
+- **Subscriptions** can be added from Budget → Subscriptions, or by switching
+  "Subscription" on for any recurring expense (Profile → Recurring).
+
 ## Phase 1 scope
 
 Also added: a **Profile → Recurring** screen listing every schedule with edit/stop, so a schedule stays reachable even after all its transactions are deleted.
@@ -80,6 +92,14 @@ Small text must reach 4.5:1 contrast. These Style Guide values were adjusted:
 | Light `financial-income` | #168D72 | #12785F |
 | Light `financial-expense` | #C75E50 | #B14E3E |
 | Light `financial-warning` | #A87917 | #8A6210 |
+
+Chart colours were run through the dataviz palette validator. Income (cyan) vs
+expenses (yellow) passes CVD separation (ΔE ≈ 17), normal-vision separation and
+3:1 contrast in both modes. Light-mode yellow was darkened to #A87D12 (was 2.6:1
+on white). In dark mode the brand chart colours sit above the validator's
+lightness band (calibrated for near-black surfaces); they are kept because the
+Pocket Watch dark surface is mid-teal and in-band colours look muddy. Charts
+always ship with a legend, tooltips and a table view.
 
 Light-mode values the Style Guide did not specify (hover, active, overlay,
 chart colours, etc.) were derived to keep the same identity.

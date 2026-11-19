@@ -127,3 +127,31 @@ describe("subscription monthly equivalent", () => {
     expect(monthlyEquivalent("9.99", "monthly").toFixed(2)).toBe("9.99");
   });
 });
+
+import { expensesByCategory, monthlySeries } from "@/lib/calculations";
+
+describe("monthly series", () => {
+  it("buckets by calendar month and keeps empty months", () => {
+    const s = monthlySeries(
+      [tx("income", "100", "2026-09-30"), tx("expense", "40", "2026-10-01"), tx("expense", "5.55", "2026-10-31"), tx("income", "9", "2026-12-01")],
+      ["2026-09", "2026-10", "2026-11"],
+    );
+    expect(s.map((p) => [p.month, p.income.toFixed(2), p.expenses.toFixed(2), p.net.toFixed(2)])).toEqual([
+      ["2026-09", "100.00", "0.00", "100.00"],
+      ["2026-10", "0.00", "45.55", "-45.55"],
+      ["2026-11", "0.00", "0.00", "0.00"],
+    ]);
+  });
+});
+
+describe("expenses by category", () => {
+  it("sums only expenses in range, per category", () => {
+    const m = expensesByCategory(
+      [tx("expense", "10", "2026-11-01", "a"), tx("expense", "2.50", "2026-11-30", "a"), tx("income", "99", "2026-11-05", "a"), tx("expense", "7", "2026-12-01", "a"), tx("expense", "3", "2026-11-10", "b")],
+      toIsoDate("2026-11-01"),
+      toIsoDate("2026-11-30"),
+    );
+    expect(m.get("a")?.toFixed(2)).toBe("12.50");
+    expect(m.get("b")?.toFixed(2)).toBe("3.00");
+  });
+});

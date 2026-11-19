@@ -79,3 +79,33 @@ export function monthlyEquivalent(amount: string, interval: "weekly" | "monthly"
   const a = new Decimal(amount);
   return interval === "weekly" ? a.times(52).dividedBy(12) : a;
 }
+
+export type MonthPoint = { month: string; income: Decimal; expenses: Decimal; net: Decimal };
+
+/**
+ * Income and expenses per calendar month for the given month keys ("2026-11"),
+ * including months with no activity (PRD §8.3).
+ */
+export function monthlySeries(transactions: TxForCalc[], monthKeys: string[]): MonthPoint[] {
+  const buckets = new Map(monthKeys.map((m) => [m, { income: new Decimal(0), expenses: new Decimal(0) }]));
+  for (const t of transactions) {
+    const b = buckets.get(t.transaction_date.slice(0, 7));
+    if (!b) continue;
+    if (t.transaction_type === "income") b.income = b.income.plus(t.amount);
+    else b.expenses = b.expenses.plus(t.amount);
+  }
+  return monthKeys.map((month) => {
+    const b = buckets.get(month)!;
+    return { month, income: b.income, expenses: b.expenses, net: b.income.minus(b.expenses) };
+  });
+}
+
+/** Total expense amount per category within [start, end]. Income never counts (PRD §8.2). */
+export function expensesByCategory(transactions: TxForCalc[], start: IsoDate, end: IsoDate): Map<string, Decimal> {
+  const out = new Map<string, Decimal>();
+  for (const t of transactions) {
+    if (t.transaction_type !== "expense" || !inRange(t, start, end)) continue;
+    out.set(t.category_id, (out.get(t.category_id) ?? new Decimal(0)).plus(t.amount));
+  }
+  return out;
+}

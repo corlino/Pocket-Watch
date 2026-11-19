@@ -114,7 +114,7 @@ export async function updateSchedule(input: ScheduleUpdateInput): Promise<Action
 
   const { data: current, error: readError } = await supabase
     .from("recurring_schedules")
-    .select("id, next_scheduled_date, recurrence_interval, anchor_day_of_month")
+    .select("id, next_scheduled_date, recurrence_interval, anchor_day_of_month, transaction_type")
     .eq("id", v.scheduleId)
     .maybeSingle();
   if (readError) return friendly(readError);
@@ -137,6 +137,8 @@ export async function updateSchedule(input: ScheduleUpdateInput): Promise<Action
       notes: v.notes,
       recurrence_interval: v.interval,
       anchor_day_of_month: anchor,
+      // Only expenses can be subscriptions (DB check enforces this too).
+      ...(v.isSubscription !== undefined && current.transaction_type === "expense" ? { is_subscription: v.isSubscription } : {}),
     })
     .eq("id", v.scheduleId);
   if (error) return friendly(error);

@@ -54,6 +54,7 @@ export const scheduleUpdateSchema = z.object({
   description: optionalText(DESCRIPTION_MAX, "Description"),
   notes: optionalText(NOTES_MAX, "Notes"),
   interval: z.enum(["weekly", "monthly"]),
+  isSubscription: z.boolean().optional(),
 });
 
 export type ScheduleUpdateInput = z.input<typeof scheduleUpdateSchema>;

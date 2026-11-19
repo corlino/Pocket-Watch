@@ -105,7 +105,7 @@
   --pw-exceeded: #b14e3e;
 
   --pw-chart-cyan: #0b9fae;
-  --pw-chart-yellow: #c99a1c;
+  --pw-chart-yellow: #a87d12; /* validated: 3:1+ on white, CVD-separable from cyan */
   --pw-chart-mint: #1f9d7f;
   --pw-chart-coral: #d46a58;
   --pw-chart-purple: #7a62c9;

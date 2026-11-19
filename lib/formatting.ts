@@ -40,3 +40,11 @@ export function formatDateLong(date: IsoDate): string {
   const { year, month, day } = parts(date);
   return `${MONTHS[month - 1]} ${day}, ${year}`;
 }
+
+const SHORT_MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+/** Chart axis label for "2026-11": "Nov"; January also shows the year ("Jan ’27"). */
+export function formatMonthShort(monthKey: string): string {
+  const [y, m] = monthKey.split("-").map(Number);
+  return m === 1 ? `Jan ’${String(y).slice(2)}` : SHORT_MONTHS[m - 1];
+}

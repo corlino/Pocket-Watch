@@ -7,6 +7,7 @@ import { CurrencyInput } from "@/components/ui/currency-input";
 import { Field, FieldGroup } from "@/components/ui/field";
 import { Input, Textarea } from "@/components/ui/input";
 import { SegmentedControl } from "@/components/ui/segmented-control";
+import { Switch } from "@/components/ui/switch";
 import { CategorySelectionGrid } from "@/components/categories/category-selection-grid";
 import { ConfirmDialog } from "@/components/shared/confirm-dialog";
 import { disableSchedule, updateSchedule } from "@/features/transactions/actions";
@@ -35,6 +36,7 @@ export function ScheduleForm({
   const [notes, setNotes] = React.useState(schedule.notes ?? "");
   const [categoryId, setCategoryId] = React.useState(schedule.category_id);
   const [interval, setInterval] = React.useState<RecurrenceInterval>(schedule.recurrence_interval);
+  const [isSubscription, setIsSubscription] = React.useState(schedule.is_subscription);
   const [errors, setErrors] = React.useState<Partial<Record<string, string>>>({});
   const [confirmStop, setConfirmStop] = React.useState(false);
   const [pending, startTransition] = React.useTransition();
@@ -46,7 +48,7 @@ export function ScheduleForm({
     const parsed = parseAmountInput(amount);
     if (!parsed.ok) return setErrors({ amount: parsed.error });
     startTransition(async () => {
-      const result = await updateSchedule({ scheduleId: schedule.id, amount, description, notes, categoryId, interval });
+      const result = await updateSchedule({ scheduleId: schedule.id, amount, description, notes, categoryId, interval, isSubscription });
       if (!result.ok) {
         setErrors(result.fieldErrors ?? {});
         toast.error(result.error);
@@ -89,6 +91,15 @@ export function ScheduleForm({
           onValueChange={setInterval}
         />
       </FieldGroup>
+      {type === "expense" && (
+        <label className="flex cursor-pointer items-center justify-between gap-3 rounded-md border border-border bg-surface p-3">
+          <span>
+            <span className="block text-body font-medium text-fg">Subscription</span>
+            <span className="block text-caption text-fg-muted">Show it under Budget → Subscriptions</span>
+          </span>
+          <Switch checked={isSubscription} onCheckedChange={setIsSubscription} aria-label="Subscription" />
+        </label>
+      )}
       <FieldGroup label="Category" error={errors.categoryId}>
         <CategorySelectionGrid categories={options} value={categoryId} onValueChange={setCategoryId} label="Category" />
       </FieldGroup>

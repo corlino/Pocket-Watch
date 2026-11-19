@@ -14,7 +14,10 @@
     "db:types": "supabase gen types typescript --remote --schema public > types/database.ts",
     "db:verify": "node --env-file=.env.local --import tsx scripts/verify-db.mts",
     "admin:create": "node --env-file=.env.local --import tsx scripts/admin-account.mts create",
-    "admin:reset": "node --env-file=.env.local --import tsx scripts/admin-account.mts reset"
+    "admin:reset": "node --env-file=.env.local --import tsx scripts/admin-account.mts reset",
+    "db:verify:prod": "node --env-file=.env.production.local --import tsx scripts/verify-db.mts",
+    "admin:create:prod": "node --env-file=.env.production.local --import tsx scripts/admin-account.mts create",
+    "admin:reset:prod": "node --env-file=.env.production.local --import tsx scripts/admin-account.mts reset"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",

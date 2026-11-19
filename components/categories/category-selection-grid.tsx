@@ -62,7 +62,10 @@ export function CategorySelectionGrid({
             onClick={() => onValueChange(c.id)}
             onKeyDown={(e) => onKeyDown(e, i)}
             className={cn(
-              "relative flex min-h-14 items-center gap-2.5 rounded-md border px-2.5 py-2 text-left text-caption font-medium transition-colors duration-(--duration-hover)",
+              // Narrow phones: icon above the name (as in the reference) so long
+              // single words like "Transportation" get the full tile width.
+              "relative flex min-h-14 flex-col items-center justify-center gap-1.5 rounded-md border px-2 py-2.5 text-center text-caption font-medium transition-colors duration-(--duration-hover)",
+              "min-[400px]:flex-row min-[400px]:justify-start min-[400px]:gap-2.5 min-[400px]:px-2.5 min-[400px]:py-2 min-[400px]:text-left",
               "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand",
               selected
                 ? "border-brand bg-brand-soft text-fg"
@@ -70,8 +73,14 @@ export function CategorySelectionGrid({
             )}
           >
             <CategoryIcon icon={c.icon} color={c.color} size="sm" />
-            <span className="line-clamp-2 min-w-0 flex-1 leading-tight">{c.name}</span>
-            {selected && <Check className="size-4 shrink-0 text-brand" strokeWidth={2.4} aria-hidden />}
+            <span className="line-clamp-2 max-w-full min-w-0 leading-tight break-words min-[400px]:flex-1">{c.name}</span>
+            {selected && (
+              <Check
+                className="absolute top-1.5 right-1.5 size-4 shrink-0 text-brand min-[400px]:static"
+                strokeWidth={2.4}
+                aria-hidden
+              />
+            )}
           </button>
         );
       })}

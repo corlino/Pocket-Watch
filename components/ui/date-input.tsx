@@ -10,7 +10,7 @@ import { controlClasses } from "./input";
  */
 export function DateInput({ className, ...props }: Omit<React.ComponentProps<"input">, "type">) {
   return (
-    <div className="relative">
+    <div className="relative w-full min-w-0">
       <input
         type="date"
         className={cn(controlClasses, "h-11 pr-10 [&::-webkit-calendar-picker-indicator]:opacity-0", className)}

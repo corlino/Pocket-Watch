@@ -301,6 +301,32 @@
   body {
     overflow-x: clip;
   }
+  /*
+   * iOS Safari gives native date/month fields an intrinsic minimum width and
+   * ignores width:100% unless native appearance is off, so they overflowed
+   * their container. Also left-align the value (iOS centres it) and keep the
+   * field height when the value is empty.
+   */
+  input[type="date"],
+  input[type="month"],
+  input[type="time"],
+  input[type="datetime-local"] {
+    -webkit-appearance: none;
+    appearance: none;
+    display: block;
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+  }
+  input::-webkit-date-and-time-value {
+    text-align: left;
+    min-height: 1.45em;
+    margin: 0;
+  }
+  input::-webkit-datetime-edit {
+    padding: 0;
+  }
+
   /* Removes the double-tap-to-zoom delay on controls. */
   a,
   button,

@@ -46,6 +46,9 @@ documents, this file wins.
 - **Money is never truncated.** Large figures step their font size down via
   `components/financial/fit-text.ts`; multi-amount lines may wrap between
   amounts.
+- **Native date/month fields** have native appearance turned off globally:
+  iOS Safari otherwise gives them an intrinsic minimum width and ignores
+  `width: 100%`, pushing them off the right edge.
 - **Dropdowns** match their field's width, never exceed the screen
   (`max-w: 100vw - 16px`, 8px collision padding) and wrap long option labels.
 

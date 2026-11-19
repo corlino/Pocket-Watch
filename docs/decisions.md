@@ -84,7 +84,10 @@ Small text must reach 4.5:1 contrast. These Style Guide values were adjusted:
 Light-mode values the Style Guide did not specify (hover, active, overlay,
 chart colours, etc.) were derived to keep the same identity.
 
-## Outstanding
+## Brand assets
 
-- Higher-resolution app icon (1024×1024 PNG or SVG) — current icons are
-  upscaled from 321×321.
+- 1024px masters live in `docs/` (Logo App Icon / Dark / Light).
+- iPhone and PWA icons use a **full-bleed** version of the app icon (corners
+  filled with its gradient #01BDC6 → #0B9095 → #186367) because iOS renders
+  transparent corners black and applies its own rounding. The browser-tab
+  favicon keeps the rounded artwork.

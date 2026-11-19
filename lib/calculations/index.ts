@@ -109,3 +109,46 @@ export function expensesByCategory(transactions: TxForCalc[], start: IsoDate, en
   }
   return out;
 }
+
+export type BreakdownSlice = { categoryId: string | "other"; amount: Decimal; percent: Decimal };
+
+/**
+ * Category breakdown (FR-AN-003): amounts and share of total for one
+ * transaction type, largest first; anything past `maxSlices` folds into
+ * "other" so the chart stays readable.
+ */
+export function categoryBreakdown(
+  transactions: TxForCalc[],
+  type: "income" | "expense",
+  maxSlices = 6,
+): { total: Decimal; slices: BreakdownSlice[] } {
+  const sums = new Map<string, Decimal>();
+  for (const t of transactions) {
+    if (t.transaction_type !== type) continue;
+    sums.set(t.category_id, (sums.get(t.category_id) ?? new Decimal(0)).plus(t.amount));
+  }
+  const total = sumMoney([...sums.values()]);
+  const ranked = [...sums.entries()].sort((a, b) => b[1].comparedTo(a[1]));
+  const head = ranked.length > maxSlices ? ranked.slice(0, maxSlices - 1) : ranked;
+  const tail = ranked.length > maxSlices ? ranked.slice(maxSlices - 1) : [];
+  const pct = (v: Decimal) => (total.isZero() ? new Decimal(0) : v.dividedBy(total).times(100));
+  const slices: BreakdownSlice[] = head.map(([id, amount]) => ({ categoryId: id, amount, percent: pct(amount) }));
+  if (tail.length) {
+    const amount = sumMoney(tail.map(([, v]) => v));
+    slices.push({ categoryId: "other", amount, percent: pct(amount) });
+  }
+  return { total, slices };
+}
+
+/** Savings rate per month; null where there was no income (F-09). */
+export function savingsSeries(points: MonthPoint[]): { month: string; rate: Decimal | null }[] {
+  return points.map((p) => ({ month: p.month, rate: p.income.isZero() ? null : p.net.dividedBy(p.income).times(100) }));
+}
+
+export type Change = { from: Decimal; to: Decimal; delta: Decimal; percent: Decimal | null };
+
+/** Change between two values; percent is null when the base is zero (FR-AN-007). */
+export function change(from: Decimal, to: Decimal): Change {
+  const delta = to.minus(from);
+  return { from, to, delta, percent: from.isZero() ? null : delta.dividedBy(from.abs()).times(100) };
+}

@@ -169,3 +169,52 @@ describe("chart axis ticks", () => {
     expect(niceTicks(max)).toEqual(expected);
   });
 });
+
+import { categoryBreakdown, change, savingsSeries } from "@/lib/calculations";
+
+describe("category breakdown", () => {
+  const rows = [
+    tx("expense", "50", "2026-11-01", "a"),
+    tx("expense", "30", "2026-11-02", "b"),
+    tx("expense", "20", "2026-11-03", "a"),
+    tx("income", "999", "2026-11-03", "a"),
+    tx("expense", "10", "2026-11-04", "c"),
+  ];
+  it("ranks categories with exact percentages", () => {
+    const { total, slices } = categoryBreakdown(rows, "expense");
+    expect(total.toFixed(2)).toBe("110.00");
+    expect(slices.map((s) => [s.categoryId, s.amount.toFixed(2), s.percent.toFixed(2)])).toEqual([
+      ["a", "70.00", "63.64"],
+      ["b", "30.00", "27.27"],
+      ["c", "10.00", "9.09"],
+    ]);
+  });
+  it("folds the tail into other", () => {
+    const { slices } = categoryBreakdown(rows, "expense", 2);
+    expect(slices.map((s) => [s.categoryId, s.amount.toFixed(2)])).toEqual([
+      ["a", "70.00"],
+      ["other", "40.00"],
+    ]);
+  });
+  it("handles an empty set", () => {
+    expect(categoryBreakdown([], "expense")).toEqual({ total: new Decimal(0), slices: [] });
+  });
+});
+
+describe("savings series and change", () => {
+  it("marks months without income as unavailable", () => {
+    const s = savingsSeries([
+      { month: "2026-10", income: new Decimal(0), expenses: new Decimal(5), net: new Decimal(-5) },
+      { month: "2026-11", income: new Decimal(200), expenses: new Decimal(50), net: new Decimal(150) },
+    ]);
+    expect(s[0].rate).toBeNull();
+    expect(s[1].rate?.toFixed(2)).toBe("75.00");
+  });
+  it("computes deltas and percent change", () => {
+    const c = change(new Decimal(200), new Decimal(150));
+    expect(c.delta.toFixed(2)).toBe("-50.00");
+    expect(c.percent?.toFixed(2)).toBe("-25.00");
+    expect(change(new Decimal(0), new Decimal(10)).percent).toBeNull();
+    expect(change(new Decimal(-100), new Decimal(-50)).percent?.toFixed(2)).toBe("50.00");
+  });
+});

@@ -33,6 +33,28 @@ documents, this file wins.
 | Date format | MM/DD/YYYY default (DD/MM/YYYY and YYYY-MM-DD available in Profile). |
 | Timezone | `America/Vancouver`. |
 
+## Phase 3 notes (Analytics)
+
+- **Filters** (period presets, month, year, custom range, category, type) live
+  in the URL and drive every section. Net cash flow and savings rate show "—"
+  when a type or category filter is on, because they compare income with
+  expenses.
+- **Expense breakdown** keeps the donut the PRD/Style Guide ask for, paired with
+  a ranked list (icon, name, amount, %, bar) so categories are identified and
+  compared without relying on colour. More than 6 categories fold into "Other".
+  Known limitation: brand blue and purple are hard to tell apart for some
+  colour-blind readers; the list carries identity.
+- **Trends** draw Net cash flow as a dashed line in the primary text colour
+  (mint was too close to income cyan).
+- **Savings** ignores type/category filters (it needs both) and says so.
+- **Subscriptions** in Analytics show subscription vs other expenses per month
+  plus the active list with monthly equivalents; management stays on the Budget
+  page.
+- **Historical comparison** compares any two months or years (category filter
+  applies). **Budget history** keeps monthly and yearly separate.
+- Chart colours reference `--pw-*` tokens directly: Tailwind only emits
+  `--color-*` variables that a class uses, so some were undefined at runtime.
+
 ## Phase 2 notes
 
 - **Budget totals:** "Total Spent" and utilisation cover budgeted categories

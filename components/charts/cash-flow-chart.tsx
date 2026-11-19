@@ -1,17 +1,15 @@
 "use client";
 
 import * as React from "react";
+import { useCanHover } from "@/hooks/use-can-hover";
+import { INCOME_EXPENSE_SERIES, type ChartSeries } from "./series";
 import { Bar, BarChart, CartesianGrid, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { ChartColumn, Table2 } from "lucide-react";
 import { formatMoney, toDecimal, type Currency, type NumberFormat } from "@/lib/money";
 import { cn } from "@/lib/utils";
 
-export type CashFlowPoint = { month: string; label: string; longLabel: string; income: string; expenses: string };
-
-const SERIES = [
-  { key: "income", name: "Income", color: "var(--color-chart-cyan)" },
-  { key: "expenses", name: "Expenses", color: "var(--color-chart-yellow)" },
-] as const;
+export type CashFlowPoint = { month: string; label: string; longLabel: string } & Record<string, string>;
+export type { ChartSeries } from "./series";
 
 /** Round axis maximum and step so ticks land on 0 / 1k / 2k / 3k-style values. */
 export function niceTicks(max: number, intervals = 3): number[] {
@@ -34,33 +32,35 @@ export function CashFlowChart({
   currency,
   numberFormat,
   selectedMonth,
+  series = INCOME_EXPENSE_SERIES,
+  showNet = true,
+  title = "Income and expenses by month",
 }: {
   data: CashFlowPoint[];
   currency: Currency;
   numberFormat: NumberFormat;
   selectedMonth?: string;
+  /** Bars per month, in fixed order (colour follows the series). */
+  series?: ChartSeries[];
+  /** Show Net (first series minus second) in the figures row. */
+  showNet?: boolean;
+  title?: string;
 }) {
+  const SERIES = series;
   const [view, setView] = React.useState<"chart" | "table">("chart");
   const [focusMonth, setFocusMonth] = React.useState(selectedMonth ?? data[data.length - 1]?.month);
-  const [canHover, setCanHover] = React.useState(false);
-  React.useEffect(() => {
-    const mq = window.matchMedia("(hover: hover) and (pointer: fine)");
-    const update = () => setCanHover(mq.matches);
-    update();
-    mq.addEventListener("change", update);
-    return () => mq.removeEventListener("change", update);
-  }, []);
+  const canHover = useCanHover();
 
   const fmt = (v: string) => formatMoney(v, { currency, numberFormat });
   const symbol = formatMoney("0", { currency }).replace(/[\d.,\s ]/g, "");
   const compact = (v: number) => (v >= 1000 ? `${symbol}${Number((v / 1000).toFixed(1))}k` : `${symbol}${v}`);
 
-  const chartData = data.map((d) => ({ ...d, incomeN: Number(d.income), expensesN: Number(d.expenses) }));
-  const max = Math.max(0, ...chartData.flatMap((d) => [d.incomeN, d.expensesN]));
+  const chartData = data.map((d) => ({ ...d, ...Object.fromEntries(SERIES.map((s) => [`${s.key}N`, Number(d[s.key] ?? 0)])) })) as (CashFlowPoint & Record<string, number | string>)[];
+  const max = Math.max(0, ...chartData.flatMap((d) => SERIES.map((s) => Number(d[`${s.key}N`]))));
   const ticks = niceTicks(max);
   const empty = max === 0;
   const focus = data.find((d) => d.month === focusMonth) ?? data[data.length - 1];
-  const net = focus ? toDecimal(focus.income).minus(focus.expenses) : null;
+  const net = focus && showNet && SERIES.length >= 2 ? toDecimal(focus[SERIES[0].key] ?? "0").minus(focus[SERIES[1].key] ?? "0") : null;
   const summaryId = React.useId();
 
   return (
@@ -90,13 +90,12 @@ export function CashFlowChart({
       {/* The figures double as the legend: swatch + series name + value. */}
       {focus && (
         <dl className="-mt-1 grid grid-cols-3 gap-2" aria-label="Legend and figures" aria-live="polite">
-          <Figure label="Income" value={fmt(focus.income)} swatch={SERIES[0].color} />
-          <Figure label="Expenses" value={fmt(focus.expenses)} swatch={SERIES[1].color} />
-          <Figure
-            label="Net"
-            value={net ? formatMoney(net, { currency, numberFormat, sign: "always" }) : "—"}
-            tone={net?.isNegative() ? "text-negative" : "text-fg"}
-          />
+          {SERIES.map((s) => (
+            <Figure key={s.key} label={s.name} value={fmt(focus[s.key] ?? "0")} swatch={s.color} />
+          ))}
+          {net && (
+            <Figure label="Net" value={formatMoney(net, { currency, numberFormat, sign: "always" })} tone={net.isNegative() ? "text-negative" : "text-fg"} />
+          )}
         </dl>
       )}
 
@@ -123,16 +122,17 @@ export function CashFlowChart({
                 accessibilityLayer={false}
                 tabIndex={-1}
               >
-                <CartesianGrid vertical={false} stroke="var(--color-border)" />
+                <CartesianGrid vertical={false} stroke="var(--pw-border)" />
                 <XAxis
                   dataKey="label"
                   tickLine={false}
                   axisLine={false}
-                  interval={0}
+                  interval={data.length > 8 ? "preserveStartEnd" : 0}
+                  minTickGap={4}
                   tick={({ x, y, payload, index }) => {
                     const isFocus = chartData[index]?.month === focus?.month;
                     return (
-                      <text x={x} y={Number(y) + 13} textAnchor="middle" fontSize={12} fill={isFocus ? "var(--color-fg)" : "var(--color-fg-muted)"} fontWeight={isFocus ? 600 : 400}>
+                      <text x={x} y={Number(y) + 13} textAnchor="middle" fontSize={12} fill={isFocus ? "var(--pw-text-primary)" : "var(--pw-text-muted)"} fontWeight={isFocus ? 600 : 400}>
                         {payload.value}
                       </text>
                     );
@@ -145,13 +145,13 @@ export function CashFlowChart({
                   ticks={ticks}
                   domain={[0, ticks[ticks.length - 1]]}
                   interval={0}
-                  tick={{ fontSize: 11, fill: "var(--color-fg-muted)" }}
+                  tick={{ fontSize: 11, fill: "var(--pw-text-muted)" }}
                   tickFormatter={compact}
                 />
                 {canHover && (
                   <Tooltip
-                    cursor={{ fill: "var(--color-surface-hover)", opacity: 0.5 }}
-                    content={(props) => <ChartTooltip active={props.active} label={props.label} fmt={fmt} data={data} />}
+                    cursor={{ fill: "var(--pw-surface-hover)", opacity: 0.5 }}
+                    content={(props) => <ChartTooltip active={props.active} label={props.label} fmt={fmt} data={data} series={SERIES} />}
                   />
                 )}
                 {SERIES.map((s) => (
@@ -165,7 +165,7 @@ export function CashFlowChart({
             </ResponsiveContainer>
           </div>
           <figcaption id={summaryId} className="sr-only">
-            Income and expenses by month. {data.map((d) => `${d.longLabel}: income ${fmt(d.income)}, expenses ${fmt(d.expenses)}.`).join(" ")}
+            {title}. {data.map((d) => `${d.longLabel}: ${SERIES.map((s) => `${s.name.toLowerCase()} ${fmt(d[s.key] ?? "0")}`).join(", ")}.`).join(" ")}
           </figcaption>
           <p className="mt-1 text-center text-caption text-fg-muted" aria-hidden>
             Tap a month to see its figures
@@ -173,20 +173,22 @@ export function CashFlowChart({
         </figure>
       ) : (
         <table className="w-full text-body">
-          <caption className="sr-only">Income and expenses by month</caption>
+          <caption className="sr-only">{title}</caption>
           <thead>
             <tr className="text-left text-caption text-fg-muted">
               <th scope="col" className="py-2 font-medium">Month</th>
-              <th scope="col" className="py-2 text-right font-medium">Income</th>
-              <th scope="col" className="py-2 text-right font-medium">Expenses</th>
+              {SERIES.map((s) => (
+                <th key={s.key} scope="col" className="py-2 text-right font-medium">{s.name}</th>
+              ))}
             </tr>
           </thead>
           <tbody>
             {data.map((d) => (
               <tr key={d.month} className={cn("border-t border-border", d.month === focus?.month && "font-semibold")}>
                 <th scope="row" className="py-2 text-left font-normal text-fg-secondary">{d.label}</th>
-                <td className="money py-2 text-right text-fg">{fmt(d.income)}</td>
-                <td className="money py-2 text-right text-fg">{fmt(d.expenses)}</td>
+                {SERIES.map((s) => (
+                  <td key={s.key} className="money py-2 text-right text-fg">{fmt(d[s.key] ?? "0")}</td>
+                ))}
               </tr>
             ))}
           </tbody>
@@ -213,11 +215,13 @@ function ChartTooltip({
   label,
   fmt,
   data,
+  series: SERIES,
 }: {
   active?: boolean;
   label?: string | number;
   fmt: (v: string) => string;
   data: CashFlowPoint[];
+  series: ChartSeries[];
 }) {
   if (!active) return null;
   const point = data.find((d) => d.label === label);
@@ -231,7 +235,7 @@ function ChartTooltip({
             <span aria-hidden className="size-2 rounded-[2px]" style={{ background: s.color }} />
             {s.name}
           </span>
-          <span className="money font-medium text-fg">{fmt(point[s.key])}</span>
+          <span className="money font-medium text-fg">{fmt(point[s.key] ?? "0")}</span>
         </p>
       ))}
     </div>

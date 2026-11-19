@@ -83,7 +83,7 @@ async function Summary({ searchParams }: { searchParams: Search }) {
   const negative = s.netCashFlow.isNegative();
 
   return (
-    <section aria-labelledby="summary-heading" className="grid gap-4 md:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)] md:items-end">
+    <section aria-labelledby="summary-heading" className="grid grid-cols-1 gap-4 md:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)] md:items-end">
       {/* F-01 hero: Net Cash Flow replaces "Current Balance" (docs/decisions.md). */}
       <div>
         <h1 id="summary-heading" className="text-h4 font-semibold text-fg">

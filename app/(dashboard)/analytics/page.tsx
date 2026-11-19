@@ -27,6 +27,7 @@ import { appToday } from "@/lib/dates/today";
 import { formatDate, formatMonthShort, formatMonthYear } from "@/lib/formatting";
 import { formatMoney, formatPercent, sumMoney } from "@/lib/money";
 import { cn } from "@/lib/utils";
+import { figureSizeMd } from "@/components/financial/fit-text";
 
 export const metadata: Metadata = { title: "Analytics" };
 
@@ -304,18 +305,18 @@ async function Subscriptions({ searchParams }: { searchParams: Search }) {
             <EmptyState icon={Repeat} title="No subscriptions added yet." description="Add them on the Budget page to track their monthly cost here." />
           ) : (
             <>
-              <dl className="mb-4 grid grid-cols-3 gap-2">
+              <dl className="mb-4 grid grid-cols-3 gap-2 [&>div]:min-w-0">
                 <div>
                   <dt className="text-caption text-fg-muted">Active</dt>
                   <dd className="money text-h3 font-semibold text-fg">{subs.length}</dd>
                 </div>
                 <div>
                   <dt className="text-caption text-fg-muted">Per month</dt>
-                  <dd className="money text-h3 font-semibold text-fg">{fmt(monthlyTotal)}</dd>
+                  <dd className={cn("money font-semibold text-fg", figureSizeMd(fmt(monthlyTotal)))}>{fmt(monthlyTotal)}</dd>
                 </div>
                 <div>
                   <dt className="text-caption text-fg-muted">Per year</dt>
-                  <dd className="money text-h3 font-semibold text-fg">{fmt(monthlyTotal.times(12))}</dd>
+                  <dd className={cn("money font-semibold text-fg", figureSizeMd(fmt(monthlyTotal.times(12))))}>{fmt(monthlyTotal.times(12))}</dd>
                 </div>
               </dl>
               <ul className="flex flex-col divide-y divide-border" aria-label="Active subscriptions">
@@ -467,9 +468,9 @@ async function BudgetHistorySection({ searchParams }: { searchParams: Search }) 
           <div className="flex flex-col gap-5">
             {history.slice(0, yearly ? 5 : 6).map((p) => (
               <div key={p.id}>
-                <div className="mb-2 flex items-baseline justify-between gap-2">
+                <div className="mb-2 flex flex-wrap items-baseline justify-between gap-x-2 gap-y-0.5">
                   <h3 className="text-body font-semibold text-fg">{yearly ? p.id : formatMonthYear(monthRange(p.id as MonthKey).start)}</h3>
-                  <p className="money text-caption text-fg-secondary">
+                  <p className="text-caption text-fg-secondary tabular-nums">
                     {fmt(p.totals.spent)} of {fmt(p.totals.allocated)} · {formatPercent(p.totals.utilization, prefs.numberFormat)}
                   </p>
                 </div>
@@ -480,8 +481,8 @@ async function BudgetHistorySection({ searchParams }: { searchParams: Search }) 
                       <div className="min-w-0 flex-1">
                         <div className="flex items-baseline justify-between gap-2">
                           <span className="truncate text-caption font-medium text-fg">{l.category.name}</span>
-                          <span className="money shrink-0 text-caption text-fg-secondary">
-                            {fmt(l.progress.spent)} / {fmt(l.progress.allocated)}
+                          <span className="shrink-0 text-right text-caption text-fg-secondary tabular-nums">
+                            <span className="whitespace-nowrap">{fmt(l.progress.spent)}</span> / <span className="whitespace-nowrap">{fmt(l.progress.allocated)}</span>
                           </span>
                         </div>
                         <div className="mt-1 flex items-center gap-2">

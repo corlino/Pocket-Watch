@@ -33,6 +33,22 @@ documents, this file wins.
 | Date format | MM/DD/YYYY default (DD/MM/YYYY and YYYY-MM-DD available in Profile). |
 | Timezone | `America/Vancouver`. |
 
+## Mobile rules (from the mobile audit)
+
+- **Form controls are 16px on phones** (14px from tablet up). iOS Safari zooms
+  the whole page when a field under 16px is focused, which then leaves the page
+  zoomed and invites pinch-out.
+- **Viewport:** `minimum-scale=1` (pinch-zoom in still works) and
+  `overflow-x: clip` on html/body as a safety net.
+- **Grids always declare a base column** (`grid-cols-1` etc.). A bare `grid`
+  sizes its track to the widest content, so a long name or amount widened the
+  page.
+- **Money is never truncated.** Large figures step their font size down via
+  `components/financial/fit-text.ts`; multi-amount lines may wrap between
+  amounts.
+- **Dropdowns** match their field's width, never exceed the screen
+  (`max-w: 100vw - 16px`, 8px collision padding) and wrap long option labels.
+
 ## Phase 3 notes (Analytics)
 
 - **Filters** (period presets, month, year, custom range, category, type) live

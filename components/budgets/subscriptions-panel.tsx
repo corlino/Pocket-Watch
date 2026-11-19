@@ -15,6 +15,8 @@ import { monthlyEquivalent } from "@/lib/calculations";
 import type { IsoDate } from "@/lib/dates/date-only";
 import { formatDate } from "@/lib/formatting";
 import { formatMoney, sumMoney } from "@/lib/money";
+import { figureSizeLg } from "@/components/financial/fit-text";
+import { cn } from "@/lib/utils";
 
 /**
  * Subscriptions tab (component spec F-13, §7.5). Subscriptions are manual:
@@ -86,14 +88,14 @@ export function SubscriptionsPanel({
               </li>
             ))}
           </ul>
-          <dl className="mt-3 grid grid-cols-2 gap-3 rounded-lg border border-border bg-surface-secondary p-4">
+          <dl className="mt-3 grid grid-cols-2 gap-3 rounded-lg [&>div]:min-w-0 border border-border bg-surface-secondary p-4">
             <div>
               <dt className="text-caption text-fg-muted">Total monthly cost</dt>
-              <dd className="money text-h3 font-semibold text-fg">{fmt(monthlyTotal)}</dd>
+              <dd className={cn("money font-semibold text-fg", figureSizeLg(fmt(monthlyTotal)))}>{fmt(monthlyTotal)}</dd>
             </div>
             <div className="text-right">
               <dt className="text-caption text-fg-muted">Projected yearly cost</dt>
-              <dd className="money text-h3 font-semibold text-fg">{fmt(monthlyTotal.times(12))}</dd>
+              <dd className={cn("money font-semibold text-fg", figureSizeLg(fmt(monthlyTotal.times(12))))}>{fmt(monthlyTotal.times(12))}</dd>
             </div>
           </dl>
           <p className="mt-2 px-1 text-caption text-fg-muted">Tracked manually — Pocket Watch doesn&apos;t connect to or charge any provider.</p>

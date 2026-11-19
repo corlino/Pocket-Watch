@@ -295,6 +295,21 @@
     @apply font-sans;
     -webkit-text-size-adjust: 100%;
     -webkit-tap-highlight-color: transparent;
+    /* Safety net: nothing may widen the page beyond the screen. */
+    overflow-x: clip;
+  }
+  body {
+    overflow-x: clip;
+  }
+  /* Removes the double-tap-to-zoom delay on controls. */
+  a,
+  button,
+  input,
+  select,
+  textarea,
+  label,
+  [role="button"] {
+    touch-action: manipulation;
   }
   body {
     @apply bg-background text-foreground antialiased;

@@ -1,5 +1,6 @@
 import type { LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { figureSizeLg } from "./fit-text";
 
 /**
  * F-02 Financial Metric Card. Receives a pre-formatted value — never
@@ -48,7 +49,7 @@ export function KpiCard({
         {Icon && <Icon className="size-3.5" strokeWidth={2} aria-hidden />}
         {label}
       </p>
-      <p className={cn("money truncate text-h3 font-semibold md:text-h2", TONE[tone])}>
+      <p className={cn("money font-semibold", figureSizeLg(value), TONE[tone])}>
         <span aria-hidden={srValue ? true : undefined}>{value}</span>
         {srValue && <span className="sr-only">{srValue}</span>}
       </p>

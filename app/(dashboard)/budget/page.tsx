@@ -18,6 +18,7 @@ import { appToday } from "@/lib/dates/today";
 import { formatMonthYear } from "@/lib/formatting";
 import { formatMoney, formatPercent } from "@/lib/money";
 import { cn } from "@/lib/utils";
+import { figureSizeLg } from "@/components/financial/fit-text";
 
 export const metadata: Metadata = { title: "Budget" };
 
@@ -115,22 +116,22 @@ async function Summary({ searchParams }: { searchParams: Search }) {
 
   return (
     <section aria-label="Budget summary" className="rounded-xl border border-border bg-surface-secondary p-4 shadow-card md:p-5">
-      <dl className="grid grid-cols-2 gap-x-4 gap-y-4 lg:grid-cols-4">
+      <dl className="grid grid-cols-2 gap-x-4 gap-y-4 lg:grid-cols-4 [&>div]:min-w-0">
         <div>
           <dt className="text-caption text-fg-muted">Total Budget</dt>
-          <dd className="money text-h3 font-semibold text-fg md:text-h2">{fmt(t.allocated)}</dd>
+          <dd className={cn("money font-semibold text-fg", figureSizeLg(fmt(t.allocated)))}>{fmt(t.allocated)}</dd>
         </div>
         <div>
           <dt className="text-caption text-fg-muted">Total Spent</dt>
-          <dd className="money text-h3 font-semibold text-chart-yellow md:text-h2">{fmt(t.spent)}</dd>
+          <dd className={cn("money font-semibold text-chart-yellow", figureSizeLg(fmt(t.spent)))}>{fmt(t.spent)}</dd>
         </div>
         <div>
           <dt className="text-caption text-fg-muted">{t.remaining.isNegative() ? "Over Budget" : "Remaining"}</dt>
-          <dd className={cn("money text-h3 font-semibold md:text-h2", t.remaining.isNegative() ? "text-exceeded" : "text-fg")}>{fmt(t.remaining)}</dd>
+          <dd className={cn("money font-semibold", figureSizeLg(fmt(t.remaining)), t.remaining.isNegative() ? "text-exceeded" : "text-fg")}>{fmt(t.remaining)}</dd>
         </div>
         <div>
           <dt className="text-caption text-fg-muted">Utilization</dt>
-          <dd className="money text-h3 font-semibold text-fg md:text-h2">
+          <dd className={cn("money font-semibold text-fg", figureSizeLg(hasBudget ? formatPercent(t.utilization, prefs.numberFormat) : "—"))}>
             {hasBudget ? formatPercent(t.utilization, prefs.numberFormat) : "—"}
             {hasBudget && t.utilization == null && <span className="sr-only">Unavailable</span>}
           </dd>

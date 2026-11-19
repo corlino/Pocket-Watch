@@ -64,7 +64,7 @@ export function BudgetCategoriesPanel({
           />
         </div>
       ) : (
-        <ul className="grid gap-3 md:grid-cols-2">
+        <ul className="grid grid-cols-1 gap-3 md:grid-cols-2">
           {cards.map((c) => (
             <li key={c.id}>
               <button

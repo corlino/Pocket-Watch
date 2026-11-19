@@ -106,7 +106,7 @@ export function TransactionFilters({ categories, currentYear }: { categories: Ca
       />
 
       {showMore && (
-        <div id="more-filters" className="grid gap-3 rounded-lg border border-border bg-surface p-3 sm:grid-cols-2 lg:grid-cols-4">
+        <div id="more-filters" className="grid grid-cols-1 gap-3 rounded-lg border border-border bg-surface p-3 sm:grid-cols-2 lg:grid-cols-4">
           <Field label="Category" id="filter-category">
             <Select
               value={category}

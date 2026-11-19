@@ -3,6 +3,8 @@
 import { Cell, Pie, PieChart, ResponsiveContainer } from "recharts";
 import { CategoryIcon } from "@/components/categories/category-icon";
 import { formatMoney, type Currency, type NumberFormat } from "@/lib/money";
+import { cn } from "@/lib/utils";
+import { figureSizeMd } from "@/components/financial/fit-text";
 
 export type BreakdownItem = {
   id: string;
@@ -41,7 +43,7 @@ export function BreakdownDonut({
     // Lays out by the card's own width (container query), not the screen:
     // side by side only when there's room for full category names.
     <div className="@container">
-      <div className="grid items-center gap-5 @lg:grid-cols-[minmax(0,200px)_minmax(0,1fr)]">
+      <div className="grid grid-cols-1 items-center gap-5 @lg:grid-cols-[minmax(0,200px)_minmax(0,1fr)]">
       <figure className="relative mx-auto aspect-square w-full max-w-[220px]" aria-hidden>
         <ResponsiveContainer width="100%" height="100%">
           <PieChart accessibilityLayer={false}>
@@ -67,7 +69,7 @@ export function BreakdownDonut({
         </ResponsiveContainer>
         <figcaption className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center text-center">
           <span className="text-caption text-fg-muted">{totalLabel}</span>
-          <span className="money text-h3 font-semibold text-fg">{fmt(total)}</span>
+          <span className={cn("money max-w-[70%] font-semibold text-fg", figureSizeMd(fmt(total)))}>{fmt(total)}</span>
         </figcaption>
       </figure>
 

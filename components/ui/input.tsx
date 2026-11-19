@@ -3,7 +3,9 @@ import { cn } from "@/lib/utils";
 
 /** Shared control surface for inputs, selects and textareas (G-14, style guide §7.6). */
 export const controlClasses = cn(
-  "w-full rounded-md border border-border bg-surface-input px-3 text-body text-fg",
+  // 16px on phones: iOS Safari zooms the whole page when a field under 16px
+  // gets focus. 14px from tablet up per the type scale.
+  "w-full rounded-md border border-border bg-surface-input px-3 text-body-lg text-fg md:text-body",
   "placeholder:text-fg-muted",
   "transition-[border-color,box-shadow] duration-(--duration-hover) ease-(--ease-out)",
   "hover:border-border-strong",

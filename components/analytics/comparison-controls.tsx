@@ -46,9 +46,10 @@ export function ComparisonControls({
         value={mode}
         onValueChange={(v) => update({ cmp: v === "month" ? null : v, ca: null, cb: null })}
       />
-      <div className="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-2">
+      {/* Stacked on phones so month names never wrap inside the fields. */}
+      <div className="grid grid-cols-1 items-center gap-2 sm:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)]">
         <Select value={a} onValueChange={(v) => update({ ca: v })} options={options} aria-label="First period" />
-        <span className="text-caption text-fg-muted">vs</span>
+        <span className="text-center text-caption text-fg-muted">vs</span>
         <Select value={b} onValueChange={(v) => update({ cb: v })} options={options} aria-label="Second period" />
       </div>
     </div>

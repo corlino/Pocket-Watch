@@ -31,17 +31,18 @@ export function BudgetCategoryCard({
         <CategoryIcon icon={category.icon} color={category.color} size={compact ? "sm" : "md"} />
         <div className="min-w-0 flex-1">
           <p className="truncate text-body font-medium text-fg">{category.name}</p>
-          <p className="money text-caption text-fg-muted">
-            {fmt(progress.spent)} of {fmt(progress.allocated)}
+          {/* Allowed to wrap: two large amounts must never widen the card. */}
+          <p className="text-caption text-fg-muted tabular-nums">
+            <span className="whitespace-nowrap">{fmt(progress.spent)}</span> of <span className="whitespace-nowrap">{fmt(progress.allocated)}</span>
           </p>
         </div>
-        <p className={cn("money text-body font-semibold", progress.status === "exceeded" ? "text-exceeded" : progress.status === "warning" ? "text-warning" : "text-fg")}>
+        <p className={cn("money shrink-0 text-body font-semibold", progress.status === "exceeded" ? "text-exceeded" : progress.status === "warning" ? "text-warning" : "text-fg")}>
           {formatPercent(progress.utilization, prefs.numberFormat)}
         </p>
       </div>
       <BudgetProgressBar percent={pct} status={progress.status} label={`${category.name} budget used`} />
       <div className="flex items-center justify-between gap-2">
-        <span className={cn("money text-caption", over ? "font-medium text-exceeded" : "text-fg-secondary")}>
+        <span className={cn("money min-w-0 truncate text-caption", over ? "font-medium text-exceeded" : "text-fg-secondary")}>
           {fmt(progress.remaining)} {over ? "over" : "left"}
         </span>
         <BudgetStatusBadge status={progress.status} />

@@ -93,7 +93,7 @@ export function AnalyticsFilters({ categories, currentYear, currentMonth }: { ca
       />
 
       {open && (
-        <div id="analytics-more-filters" className="grid gap-3 rounded-lg border border-border bg-surface p-3 sm:grid-cols-2 lg:grid-cols-4">
+        <div id="analytics-more-filters" className="grid grid-cols-1 gap-3 rounded-lg border border-border bg-surface p-3 sm:grid-cols-2 lg:grid-cols-4">
           {range === "month" && (
             <Field label="Month" id="an-month">
               <input

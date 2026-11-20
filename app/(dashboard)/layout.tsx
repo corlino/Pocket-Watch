@@ -17,12 +17,16 @@ export default function DashboardLayout({ children }: LayoutProps<"/">) {
       <div className="flex min-h-dvh">
         <Sidebar />
         <div className="flex min-w-0 flex-1 flex-col">
-          <div className="mx-auto w-full max-w-content flex-1 px-4 pt-safe pb-[calc(var(--spacing-bottom-nav)+env(safe-area-inset-bottom)+24px)] md:px-8 md:pb-10">
-            <header className="pt-3 md:pt-6">
+          {/* Pinned top bar: full width of the content column, extends under
+              the iPhone status bar (pt-safe) so content never shows through. */}
+          <header className="sticky top-0 z-30 border-b border-border bg-surface/95 pt-safe shadow-card backdrop-blur-md">
+            <div className="mx-auto w-full max-w-content px-4 py-1.5 md:px-8 md:py-2">
               <Suspense fallback={<AppHeaderSkeleton />}>
                 <AppHeader />
               </Suspense>
-            </header>
+            </div>
+          </header>
+          <div className="mx-auto w-full max-w-content flex-1 px-4 pb-[calc(var(--spacing-bottom-nav)+env(safe-area-inset-bottom)+24px)] md:px-8 md:pb-10">
             <main id="main" className="pt-4 md:pt-6">
               {children}
             </main>

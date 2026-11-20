@@ -59,8 +59,10 @@ export async function proxy(request: NextRequest) {
   }
 
   if (signedIn) response.cookies.set(ACTIVITY_COOKIE, "1", activityCookieOptions);
-  // Never let shared caches store authenticated pages.
-  response.headers.set("Cache-Control", "private, no-store");
+  // Never let shared caches store authenticated pages. The profile photo
+  // route sets its own private, per-version caching (the URL changes on
+  // every upload), so the browser doesn't re-download it on every page.
+  if (path !== "/api/avatar") response.headers.set("Cache-Control", "private, no-store");
   return response;
 }
 

@@ -172,3 +172,15 @@ chart colours, etc.) were derived to keep the same identity.
   filled with its gradient #01BDC6 → #0B9095 → #186367) because iOS renders
   transparent corners black and applies its own rounding. The browser-tab
   favicon keeps the rounded artwork.
+
+## Styling update (2026-11-20)
+
+- **Font:** Space Grotesk everywhere (replaces Inter), loaded with `next/font`. Figures were re-checked at 320px: no page overflow or clipped amounts.
+- **Themes:** added Dark Red (`#511D1D`), Dark Purple (`#24213A`) and Yellow (`#C8BD49`). Each reference colour is the page background, with a matching accent (rose, lavender, deep olive). Yellow is a light-style theme with dark text, and the `light:` variant covers it. "System" still switches between Dark and Light.
+  - All text, figure and accent pairs meet WCAG AA (4.5:1). Chart marks meet 3:1.
+  - Income, expense and warning colours are re-stepped per theme so they stay distinct from the background and the accent.
+  - The blue and purple chart series stay close for colour-blind readers, as in the original palette. Legends and labels carry identity.
+- **Profile photo:** tap the avatar on Profile to choose a photo. The browser centre-crops it to a 512px JPEG, which also removes EXIF and location data, and you see a preview before saving.
+  - Photos are stored in the private Storage bucket `avatars/<user id>/`. RLS limits access to the owner's folder.
+  - `profiles.avatar_path` points at the current file. `/api/avatar` serves it to the signed-in user with private, per-version caching.
+  - Old files are deleted when a photo is replaced or removed. Photos are not part of JSON backups or CSV exports.

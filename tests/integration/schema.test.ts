@@ -25,6 +25,16 @@ const SUPABASE_STUB = `
   grant usage on schema public to anon, authenticated, service_role;
   alter default privileges in schema public grant all on tables to anon, authenticated, service_role;
   alter default privileges in schema public grant all on functions to anon, authenticated, service_role;
+  -- Minimal Supabase Storage stand-in (profile photos).
+  create schema storage;
+  create table storage.buckets (id text primary key, name text not null, public boolean default false, file_size_limit bigint, allowed_mime_types text[]);
+  create table storage.objects (id uuid primary key default gen_random_uuid(), bucket_id text references storage.buckets (id), name text not null, owner uuid);
+  alter table storage.objects enable row level security;
+  create function storage.foldername(name text) returns text[] language sql immutable as
+    $$ select (string_to_array(name, '/'))[1:array_length(string_to_array(name, '/'), 1) - 1] $$;
+  grant usage on schema storage to anon, authenticated, service_role;
+  grant all on storage.objects to authenticated, service_role;
+  grant select on storage.buckets to anon, authenticated, service_role;
 `;
 
 let db: PGlite;
@@ -236,6 +246,39 @@ describe("row level security", () => {
     await expect(asOwner(() => db.query(`select * from public.process_recurring_schedules('2026-11-19')`))).rejects.toThrow(
       /permission denied/,
     );
+  });
+});
+
+describe("profile photo storage", () => {
+  const path = (uid: string) => `${uid}/avatar-1763600000000.jpg`;
+
+  it("creates a private avatars bucket that only accepts JPEGs", async () => {
+    const r = await db.query<{ public: boolean; allowed_mime_types: string[] }>(`select public, allowed_mime_types from storage.buckets where id = 'avatars'`);
+    expect(r.rows[0]).toEqual({ public: false, allowed_mime_types: ["image/jpeg"] });
+  });
+
+  it("lets the owner write and read only inside their own folder", async () => {
+    await asOwner(() => db.query(`insert into storage.objects (bucket_id, name) values ('avatars', $1)`, [path(OWNER)]));
+    await expect(
+      asOwner(() => db.query(`insert into storage.objects (bucket_id, name) values ('avatars', $1)`, [path(INTRUDER)])),
+    ).rejects.toThrow(/row-level security/);
+    const seen = await asOwner(() => db.query(`select name from storage.objects`), INTRUDER);
+    expect(seen.rows).toHaveLength(0);
+  });
+
+  it("only stores well-formed photo paths on the profile", async () => {
+    await asOwner(() => db.query(`update public.profiles set avatar_path = $1 where id = $2`, [path(OWNER), OWNER]));
+    await expect(
+      asOwner(() => db.query(`update public.profiles set avatar_path = '../etc/passwd' where id = $1`, [OWNER])),
+    ).rejects.toThrow(/check constraint/);
+  });
+
+  it("accepts the new colour themes", async () => {
+    for (const theme of ["dark-red", "dark-purple", "yellow"]) {
+      await asOwner(() => db.query(`update public.preferences set appearance = $1`, [theme]));
+    }
+    const r = await db.query<{ appearance: string }>(`select appearance from public.preferences`);
+    expect(r.rows[0].appearance).toBe("yellow");
   });
 });
 

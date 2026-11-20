@@ -1,4 +1,6 @@
 import "server-only";
+import type { Appearance } from "@/lib/theme";
+import { avatarUrl } from "@/features/profile/avatar";
 import { cache } from "react";
 import { requireUser } from "@/lib/auth/dal";
 import { isIsoDate, isMonthKey, monthRange, yearRange, type IsoDate, type MonthKey } from "@/lib/dates/date-only";
@@ -102,8 +104,12 @@ export const getDisplayPrefs = cache(async (): Promise<DisplayPrefs> => {
 
 export const getProfile = cache(async () => {
   const { supabase, userId } = await requireUser();
-  const { data } = await supabase.from("profiles").select("display_name, notifications_seen_at").eq("id", userId).maybeSingle();
-  return { displayName: data?.display_name ?? "Colin", notificationsSeenAt: data?.notifications_seen_at ?? null };
+  const { data } = await supabase.from("profiles").select("display_name, notifications_seen_at, avatar_path").eq("id", userId).maybeSingle();
+  return {
+    displayName: data?.display_name ?? "Colin",
+    notificationsSeenAt: data?.notifications_seen_at ?? null,
+    avatarUrl: avatarUrl(data?.avatar_path ?? null),
+  };
 });
 
 export type ScheduleWithCategory = import("./types").ScheduleSummary & {
@@ -145,8 +151,8 @@ export async function getAutoAddedTransactions(limit = 20) {
 }
 
 /** Appearance preference (dark | light | system). */
-export const getAppearance = cache(async (): Promise<"dark" | "light" | "system"> => {
+export const getAppearance = cache(async (): Promise<Appearance> => {
   const { supabase } = await requireUser();
   const { data } = await supabase.from("preferences").select("appearance").maybeSingle();
-  return (data?.appearance as "dark" | "light" | "system") ?? "dark";
+  return (data?.appearance as Appearance | undefined) ?? "dark";
 });

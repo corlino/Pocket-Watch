@@ -133,6 +133,7 @@ export type Database = {
       profiles: {
         Row: {
           created_at: string
+          avatar_path: string | null
           display_name: string
           id: string
           notifications_seen_at: string
@@ -140,6 +141,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          avatar_path?: string | null
           display_name?: string
           id: string
           notifications_seen_at?: string
@@ -147,6 +149,7 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          avatar_path?: string | null
           display_name?: string
           id?: string
           notifications_seen_at?: string
@@ -343,7 +346,7 @@ export type Database = {
       restore_backup: { Args: { p_backup: Json }; Returns: Json }
     }
     Enums: {
-      appearance: "dark" | "light" | "system"
+      appearance: "dark" | "light" | "system" | "dark-red" | "dark-purple" | "yellow"
       budget_period_type: "monthly" | "yearly"
       recurrence_interval: "weekly" | "monthly"
       transaction_source: "manual" | "recurring"
@@ -475,7 +478,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      appearance: ["dark", "light", "system"],
+      appearance: ["dark", "light", "system", "dark-red", "dark-purple", "yellow"],
       budget_period_type: ["monthly", "yearly"],
       recurrence_interval: ["weekly", "monthly"],
       transaction_source: ["manual", "recurring"],

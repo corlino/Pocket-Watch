@@ -5,12 +5,14 @@
 /*
  * Pocket Watch design tokens.
  * Source: docs/styleguide.md (§2, §3, §4, §5, §12, §16) reconciled with docs/references.png.
- * Dark is the default theme. Light is applied with <html data-theme="light">.
+ * Dark is the default theme. Others are applied with <html data-theme="…">:
+ * light, dark-red, dark-purple, yellow. The `light:` variant also covers
+ * yellow (dark text on a light background); `dark:` covers dark-red/purple.
  * Components use semantic tokens only — never raw hex values.
  */
 
-@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
-@custom-variant light (&:where([data-theme="light"], [data-theme="light"] *));
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *, [data-theme="dark-red"], [data-theme="dark-red"] *, [data-theme="dark-purple"], [data-theme="dark-purple"] *));
+@custom-variant light (&:where([data-theme="light"], [data-theme="light"] *, [data-theme="yellow"], [data-theme="yellow"] *));
 
 :root,
 [data-theme="dark"] {
@@ -118,6 +120,148 @@
   --pw-shadow-float: 0 6px 18px rgba(15, 55, 55, 0.16);
 }
 
+/*
+ * Additional themes (decisions.md). Each reference colour is the main
+ * background; every text/background pair checked to WCAG AA (4.5:1 text,
+ * 3:1 chart marks). Income/expense/warning hues are kept distinct from each
+ * theme's background and accent.
+ */
+
+/* Dark Red — reference #511D1D */
+[data-theme="dark-red"] {
+  color-scheme: dark;
+
+  --pw-background: #511d1d;
+  --pw-background-secondary: #5a2121;
+  --pw-background-elevated: #662727;
+  --pw-background-overlay: #2e0f0f;
+  --pw-surface: #612424;
+  --pw-surface-secondary: #6e2b2b;
+  --pw-surface-tertiary: #7a3232;
+  --pw-surface-input: #743030;
+  --pw-surface-hover: #803636;
+  --pw-surface-active: #8c3d3d;
+  --pw-brand: #f9adcf;
+  --pw-brand-hover: #fab9d4;
+  --pw-brand-active: #e98ab2;
+  --pw-brand-secondary: #ffc2da;
+  --pw-brand-soft: #7a2f45;
+  --pw-text-primary: #fdf3f1;
+  --pw-text-secondary: #ecd0cb;
+  --pw-text-muted: #e0b8b2;
+  --pw-text-disabled: #a87a75;
+  --pw-text-inverse: #4a1424;
+  --pw-income: #86e6c9;
+  --pw-expense: #ffae90;
+  --pw-neutral: #f3dedb;
+  --pw-positive: #86e6c9;
+  --pw-negative: #ffae90;
+  --pw-warning: #f7d77a;
+  --pw-exceeded: #ffae90;
+  --pw-chart-cyan: #5fdcea;
+  --pw-chart-yellow: #f6d778;
+  --pw-chart-mint: #86e6c9;
+  --pw-chart-coral: #ffa48e;
+  --pw-chart-purple: #b9a0f5;
+  --pw-chart-blue: #7fb8f2;
+  --pw-chart-muted: #b98f8a;
+
+  --pw-border: rgba(255, 190, 180, 0.14);
+  --pw-border-strong: rgba(255, 190, 180, 0.26);
+  --pw-shadow-card: 0 4px 16px rgba(25, 0, 0, 0.22);
+  --pw-shadow-float: 0 6px 20px rgba(25, 0, 0, 0.36);
+}
+
+/* Dark Purple — reference #24213A */
+[data-theme="dark-purple"] {
+  color-scheme: dark;
+
+  --pw-background: #24213a;
+  --pw-background-secondary: #2a2643;
+  --pw-background-elevated: #322e4f;
+  --pw-background-overlay: #15132a;
+  --pw-surface: #2e2a4a;
+  --pw-surface-secondary: #373257;
+  --pw-surface-tertiary: #403a63;
+  --pw-surface-input: #3b365d;
+  --pw-surface-hover: #453f6a;
+  --pw-surface-active: #4e4776;
+  --pw-brand: #b7a6ff;
+  --pw-brand-hover: #c7b9ff;
+  --pw-brand-active: #9d89f5;
+  --pw-brand-secondary: #d2c7ff;
+  --pw-brand-soft: #3f3670;
+  --pw-text-primary: #f5f3fc;
+  --pw-text-secondary: #d3cfea;
+  --pw-text-muted: #bdb6dc;
+  --pw-text-disabled: #7a7499;
+  --pw-text-inverse: #221a4a;
+  --pw-income: #6fdcbf;
+  --pw-expense: #ff9a8a;
+  --pw-neutral: #e2dff2;
+  --pw-positive: #6fdcbf;
+  --pw-negative: #ff9a8a;
+  --pw-warning: #f4d16a;
+  --pw-exceeded: #ff9a8a;
+  --pw-chart-cyan: #4fd6e6;
+  --pw-chart-yellow: #f4d16a;
+  --pw-chart-mint: #6fdcbf;
+  --pw-chart-coral: #ff927e;
+  --pw-chart-purple: #b39cf7;
+  --pw-chart-blue: #7fb5f0;
+  --pw-chart-muted: #8f89ae;
+
+  --pw-border: rgba(190, 175, 255, 0.13);
+  --pw-border-strong: rgba(190, 175, 255, 0.25);
+  --pw-shadow-card: 0 4px 16px rgba(5, 0, 20, 0.24);
+  --pw-shadow-float: 0 6px 20px rgba(5, 0, 20, 0.38);
+}
+
+/* Yellow — reference #C8BD49 (light-style: dark text) */
+[data-theme="yellow"] {
+  color-scheme: light;
+
+  --pw-background: #c8bd49;
+  --pw-background-secondary: #c0b543;
+  --pw-background-elevated: #f6f1cc;
+  --pw-background-overlay: #2a2608;
+  --pw-surface: #e4dc8a;
+  --pw-surface-secondary: #d9d07a;
+  --pw-surface-tertiary: #cfc56a;
+  --pw-surface-input: #ece6a8;
+  --pw-surface-hover: #d4cb72;
+  --pw-surface-active: #c9bf62;
+  --pw-brand: #4b4410;
+  --pw-brand-hover: #3d370b;
+  --pw-brand-active: #302b07;
+  --pw-brand-secondary: #4b4410;
+  --pw-brand-soft: #f0e8a6;
+  --pw-text-primary: #23200a;
+  --pw-text-secondary: #3b3612;
+  --pw-text-muted: #49441a;
+  --pw-text-disabled: #867f4c;
+  --pw-text-inverse: #fbf7da;
+  --pw-income: #154a22;
+  --pw-expense: #7c2216;
+  --pw-neutral: #23200a;
+  --pw-positive: #154a22;
+  --pw-negative: #7c2216;
+  --pw-warning: #583600;
+  --pw-exceeded: #7c2216;
+  --pw-chart-cyan: #0c6b78;
+  --pw-chart-yellow: #7a5208;
+  --pw-chart-mint: #1b7458;
+  --pw-chart-coral: #b0442f;
+  --pw-chart-purple: #5b44a6;
+  --pw-chart-blue: #2b5c9c;
+  --pw-chart-muted: #6f6a40;
+
+  --pw-border: rgba(60, 52, 0, 0.16);
+  --pw-border-strong: rgba(60, 52, 0, 0.3);
+  --pw-shadow-card: 0 3px 12px rgba(60, 50, 0, 0.1);
+  --pw-shadow-float: 0 6px 18px rgba(60, 50, 0, 0.2);
+}
+
 /* shadcn/ui variable contract, mapped onto Pocket Watch tokens. */
 :root,
 [data-theme] {
@@ -156,7 +300,7 @@
 
 @theme inline {
   /* Fonts */
-  --font-sans: var(--font-inter), Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-sans: var(--font-space-grotesk), "Space Grotesk", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --font-heading: var(--font-sans);
 
   /* shadcn colours */

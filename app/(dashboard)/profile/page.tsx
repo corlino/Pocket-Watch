@@ -4,6 +4,7 @@ import { DatabaseBackup, Globe, LogOut, Palette, Repeat, ShieldCheck, Shapes, Us
 import { PageHeader } from "@/components/layout/page-header";
 import { Button } from "@/components/ui/button";
 import { ProfileMenuItem, ProfileSection } from "@/components/profile/profile-menu-item";
+import { AvatarUploader } from "@/components/profile/avatar-uploader";
 import { logout } from "@/features/auth/actions";
 import { getProfile } from "@/features/transactions/queries";
 
@@ -30,7 +31,7 @@ export default function ProfilePage() {
       </ProfileSection>
 
       <ProfileSection title="Preferences">
-        <ProfileMenuItem href="/profile/appearance" icon={Palette} title="Appearance" description="Dark, light or follow your phone" />
+        <ProfileMenuItem href="/profile/appearance" icon={Palette} title="Appearance" description="Dark, light, colour themes or follow your phone" />
         <ProfileMenuItem href="/profile/regional" icon={Globe} title="Regional" description="Currency, date and number format" />
       </ProfileSection>
 
@@ -45,21 +46,10 @@ export default function ProfilePage() {
 }
 
 async function ProfileHeader() {
-  const { displayName } = await getProfile();
-  const initials = displayName
-    .split(/\s+/)
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((p) => p[0]!.toUpperCase())
-    .join("");
+  const { displayName, avatarUrl } = await getProfile();
   return (
-    <div className="flex flex-col items-center gap-3 py-2 text-center">
-      <span
-        aria-hidden
-        className="inline-flex size-22 items-center justify-center rounded-full bg-brand-soft text-h1 font-semibold text-brand-secondary light:text-brand"
-      >
-        {initials}
-      </span>
+    <div className="flex flex-col items-center gap-2 py-2 text-center">
+      <AvatarUploader name={displayName} src={avatarUrl} />
       <div>
         <p className="text-h3 font-semibold text-fg">{displayName}</p>
         <p className="text-caption text-fg-muted">Pocket Watch administrator</p>

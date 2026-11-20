@@ -1,12 +1,12 @@
 import type { Metadata, Viewport } from "next";
-import { Inter } from "next/font/google";
+import { Space_Grotesk } from "next/font/google";
 import { THEME_SCRIPT } from "@/lib/theme";
 import { Toaster } from "@/components/ui/toaster";
 import { ThemeSync } from "@/components/shared/theme-sync";
 import "./globals.css";
 
-const inter = Inter({
-  variable: "--font-inter",
+const spaceGrotesk = Space_Grotesk({
+  variable: "--font-space-grotesk",
   subsets: ["latin"],
   display: "swap",
 });
@@ -44,7 +44,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html
       lang="en-CA"
       data-theme="dark"
-      className={`${inter.variable} h-full`}
+      className={`${spaceGrotesk.variable} h-full`}
       suppressHydrationWarning
     >
       <head>

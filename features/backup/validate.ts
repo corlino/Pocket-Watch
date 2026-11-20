@@ -7,6 +7,7 @@
  */
 import { z } from "zod";
 import { isIsoDate } from "@/lib/dates/date-only";
+import { APPEARANCES } from "@/lib/theme";
 
 export const MAX_BACKUP_BYTES = 4 * 1024 * 1024; // within Vercel's request body limit
 
@@ -82,7 +83,7 @@ export const backupSchema = z.object({
         currency_display: z.enum(["CAD", "USD", "EUR", "GBP"]),
         date_format: z.enum(["MM/DD/YYYY", "DD/MM/YYYY", "YYYY-MM-DD"]),
         number_format: z.enum(["comma-dot", "space-comma", "dot-comma"]),
-        appearance: z.enum(["dark", "light", "system"]),
+        appearance: z.enum(APPEARANCES),
       })
       .partial()
       .nullable()

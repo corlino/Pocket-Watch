@@ -6,10 +6,12 @@ import { login, type LoginState } from "@/features/auth/actions";
 import { Button } from "@/components/ui/button";
 import { controlClasses } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
+import { useDesktopAutoFocus } from "@/hooks/use-desktop-autofocus";
 
 export function LoginForm({ next }: { next: string | undefined }) {
   const [state, action, pending] = useActionState<LoginState, FormData>(login, undefined);
   const [visible, setVisible] = useState(false);
+  const passwordRef = useDesktopAutoFocus<HTMLInputElement>();
 
   return (
     <form action={action} className="flex flex-col gap-4" noValidate>
@@ -27,7 +29,7 @@ export function LoginForm({ next }: { next: string | undefined }) {
             name="password"
             type={visible ? "text" : "password"}
             autoComplete="current-password"
-            autoFocus
+            ref={passwordRef}
             required
             aria-invalid={state?.error ? true : undefined}
             aria-describedby={state?.error ? "password-error" : undefined}

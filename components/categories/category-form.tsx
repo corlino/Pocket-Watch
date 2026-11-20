@@ -13,6 +13,7 @@ import { createCategory, updateCategory } from "@/features/categories/actions";
 import type { Category, TransactionType } from "@/features/transactions/types";
 import { CATEGORY_COLORS, CATEGORY_TILE, type CategoryColor } from "@/lib/categories";
 import { cn } from "@/lib/utils";
+import { useDesktopAutoFocus } from "@/hooks/use-desktop-autofocus";
 
 const COLOR_NAMES: Record<CategoryColor, string> = {
   cyan: "Cyan",
@@ -50,6 +51,7 @@ export function CategoryForm({
   const [icon, setIcon] = React.useState(category?.icon ?? "circle-ellipsis");
   const [color, setColor] = React.useState<CategoryColor>((category?.color as CategoryColor) ?? "cyan");
   const [errors, setErrors] = React.useState<Partial<Record<string, string>>>({});
+  const nameRef = useDesktopAutoFocus<HTMLInputElement>(!editing);
   const [pending, startTransition] = React.useTransition();
 
   const submit = (e: React.FormEvent) => {
@@ -98,7 +100,7 @@ export function CategoryForm({
       )}
 
       <Field label="Name" id="category-name" error={errors.name} aside={<span className="text-caption text-fg-muted" aria-hidden>{name.length}/40</span>}>
-        <Input value={name} maxLength={40} onChange={(e) => setName(e.target.value)} placeholder="e.g. Pets" autoComplete="off" autoFocus={!editing} />
+        <Input value={name} maxLength={40} onChange={(e) => setName(e.target.value)} placeholder="e.g. Pets" autoComplete="off" ref={nameRef} />
       </Field>
 
       <FieldGroup label="Colour">

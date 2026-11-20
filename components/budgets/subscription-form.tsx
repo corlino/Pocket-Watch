@@ -15,6 +15,7 @@ import { monthlyEquivalent } from "@/lib/calculations";
 import { isIsoDate, type IsoDate } from "@/lib/dates/date-only";
 import { CATEGORY_TILE } from "@/lib/categories";
 import { currencySymbol, formatMoney, parseAmountInput } from "@/lib/money";
+import { useDesktopAutoFocus } from "@/hooks/use-desktop-autofocus";
 
 /** FR-05 Add Subscription. Renewal date = next charge; recorded automatically then. */
 export function SubscriptionForm({
@@ -36,6 +37,7 @@ export function SubscriptionForm({
   const [renewal, setRenewal] = React.useState<string>(today);
   const [icon, setIcon] = React.useState("repeat");
   const [errors, setErrors] = React.useState<Partial<Record<string, string>>>({});
+  const nameRef = useDesktopAutoFocus<HTMLInputElement>();
   const [pending, startTransition] = React.useTransition();
 
   const parsed = parseAmountInput(amount);
@@ -66,7 +68,7 @@ export function SubscriptionForm({
   return (
     <form onSubmit={submit} noValidate className="flex flex-col gap-4">
       <Field label="Subscription name" id="sub-name" error={errors.name} aside={<span className="text-caption text-fg-muted" aria-hidden>{name.length}/100</span>}>
-        <Input value={name} maxLength={100} onChange={(e) => setName(e.target.value)} placeholder="e.g. Netflix" autoComplete="off" autoFocus />
+        <Input value={name} maxLength={100} onChange={(e) => setName(e.target.value)} placeholder="e.g. Netflix" autoComplete="off" ref={nameRef} />
       </Field>
       <Field label="Category" id="sub-category" error={errors.categoryId}>
         <Select value={categoryId} onValueChange={setCategoryId} placeholder="Select category" options={categories.map((c) => ({ value: c.id, label: c.name }))} />

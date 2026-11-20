@@ -20,6 +20,7 @@ import { isIsoDate, type IsoDate } from "@/lib/dates/date-only";
 import { currencySymbol, parseAmountInput } from "@/lib/money";
 import { formatDate } from "@/lib/formatting";
 import { cn } from "@/lib/utils";
+import { useDesktopAutoFocus } from "@/hooks/use-desktop-autofocus";
 
 type Errors = Partial<Record<string, string>>;
 
@@ -53,6 +54,7 @@ export function TransactionForm({
   const [recurring, setRecurring] = React.useState(false);
   const [interval, setInterval] = React.useState<RecurrenceInterval>("monthly");
   const [errors, setErrors] = React.useState<Errors>({});
+  const amountRef = useDesktopAutoFocus<HTMLInputElement>(!editing);
   const [pending, startTransition] = React.useTransition();
   const [confirm, setConfirm] = React.useState<"delete" | "stop" | null>(null);
 
@@ -133,7 +135,7 @@ export function TransactionForm({
       />
 
       <Field label="Amount" id="tx-amount" error={errors.amount}>
-        <CurrencyInput symbol={currencySymbol(prefs.currency)} value={amount} onValueChange={setAmount} autoFocus={!editing} />
+        <CurrencyInput symbol={currencySymbol(prefs.currency)} value={amount} onValueChange={setAmount} ref={amountRef} />
       </Field>
 
       <Field

@@ -20,6 +20,7 @@ export function SheetContent({
   children,
   className,
   size = "md",
+  onOpenAutoFocus,
   ...props
 }: React.ComponentProps<typeof DialogPrimitive.Content> & {
   title: React.ReactNode;
@@ -47,6 +48,16 @@ export function SheetContent({
           size === "sm" ? "md:max-w-sm" : "md:max-w-lg",
           className,
         )}
+        // Focus the sheet itself on open (screen readers land inside it) instead
+        // of the first control — never an input, so no keyboard pops up on
+        // phones. A field focused on purpose (desktop) keeps its focus.
+        onOpenAutoFocus={(event) => {
+          onOpenAutoFocus?.(event);
+          if (event.defaultPrevented) return;
+          event.preventDefault();
+          const content = event.currentTarget as HTMLElement | null;
+          if (content && !content.contains(document.activeElement)) content.focus({ preventScroll: true });
+        }}
         {...props}
       >
         <div aria-hidden className="mx-auto mt-2 h-1 w-10 shrink-0 rounded-full bg-border-strong md:hidden" />

@@ -97,7 +97,7 @@ export function BudgetForm({
       )}
 
       <Field label={periodType === "monthly" ? "Monthly budget" : "Yearly budget"} id="budget-amount" error={errors.amount} hint="Zero is allowed.">
-        <CurrencyInput symbol={currencySymbol(prefs.currency)} value={amount} onValueChange={setAmount} autoFocus={editing} />
+        <CurrencyInput symbol={currencySymbol(prefs.currency)} value={amount} onValueChange={setAmount} />
       </Field>
 
       <div className="flex flex-col gap-2">

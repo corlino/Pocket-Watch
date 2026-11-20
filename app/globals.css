@@ -317,14 +317,27 @@
     width: 100%;
     min-width: 0;
     max-width: 100%;
+    /*
+     * Vertically centre the value: 44px field = 2px border + 2×11px padding
+     * + 20px line. iOS otherwise pins the date to the top of the field.
+     */
+    /* !important: the shared field classes set a taller line-height. */
+    padding-top: 11px !important;
+    padding-bottom: 11px !important;
+    line-height: 20px !important;
+    text-align: left;
   }
   input::-webkit-date-and-time-value {
     text-align: left;
-    min-height: 1.45em;
+    line-height: 20px;
+    min-height: 20px;
     margin: 0;
-  }
-  input::-webkit-datetime-edit {
     padding: 0;
+  }
+  input::-webkit-datetime-edit,
+  input::-webkit-datetime-edit-fields-wrapper {
+    padding: 0;
+    line-height: 20px;
   }
 
   /* Removes the double-tap-to-zoom delay on controls. */

@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import { Sidebar } from "@/components/layout/sidebar";
+import { ScrollToTop } from "@/components/layout/scroll-to-top";
 import { BottomNavigation } from "@/components/layout/bottom-navigation";
 import { AppHeader, AppHeaderSkeleton } from "@/components/layout/app-header";
 import { ComposerProvider } from "@/components/transactions/composer-context";
@@ -12,6 +13,7 @@ import { TransactionComposerHost } from "@/components/transactions/transaction-c
 export default function DashboardLayout({ children }: LayoutProps<"/">) {
   return (
     <ComposerProvider>
+      <ScrollToTop />
       <div className="flex min-h-dvh">
         <Sidebar />
         <div className="flex min-w-0 flex-1 flex-col">

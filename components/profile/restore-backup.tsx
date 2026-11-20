@@ -78,7 +78,7 @@ export function RestoreBackup({ dateFormat }: { dateFormat: DateFormat }) {
         ref={inputRef}
         type="file"
         accept="application/json,.json"
-        className="sr-only"
+        className="sr-only text-body-lg"
         id="restore-file"
         onChange={(e) => onFile(e.target.files?.[0])}
       />

@@ -11,9 +11,9 @@ const OPTIONS: { value: Appearance; label: string; description: string; icon: ty
   { value: "dark", label: "Dark", description: "The Pocket Watch default", icon: Moon },
   { value: "light", label: "Light", description: "Pale surfaces, dark text", icon: Sun },
   { value: "system", label: "System", description: "Follow your phone's light or dark setting", icon: Monitor },
-  { value: "dark-red", label: "Dark Red", description: "Deep red surfaces, rose accent", icon: Palette },
-  { value: "dark-purple", label: "Dark Purple", description: "Deep purple surfaces, lavender accent", icon: Palette },
-  { value: "yellow", label: "Yellow", description: "Golden surfaces, dark text", icon: Palette },
+  { value: "dark-red", label: "Ruby", description: "Deep red surfaces, rose accent", icon: Palette },
+  { value: "dark-purple", label: "Sugilite", description: "Deep purple surfaces, lavender accent", icon: Palette },
+  { value: "yellow", label: "Citrine", description: "Golden surfaces, dark text", icon: Palette },
 ];
 
 /** Mini preview of a theme, drawn with that theme's own tokens. */

@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import { THEME_SCRIPT } from "@/lib/theme";
 import { Toaster } from "@/components/ui/toaster";
+import { ThemeSync } from "@/components/shared/theme-sync";
 import "./globals.css";
 
 const inter = Inter({
@@ -50,8 +51,15 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <script dangerouslySetInnerHTML={{ __html: THEME_SCRIPT }} />
       </head>
       <body className="min-h-full">
+        <a
+          href="#main"
+          className="sr-only z-[100] rounded-md bg-brand px-4 py-2 font-semibold text-fg-inverse focus:not-sr-only focus:fixed focus:top-3 focus:left-3"
+        >
+          Skip to content
+        </a>
         {children}
         <Toaster />
+        <ThemeSync />
       </body>
     </html>
   );

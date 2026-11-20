@@ -40,7 +40,7 @@
   /* Text */
   --pw-text-primary: #f2faf9;
   --pw-text-secondary: #c1d8d8;
-  --pw-text-muted: #9dbdbe; /* style guide #91B2B3, lightened for AA on cards */
+  --pw-text-muted: #a9c8c9; /* style guide #91B2B3, lightened for AA on raised cards (4.57:1) */
   --pw-text-disabled: #64888a;
   --pw-text-inverse: #07383b;
 

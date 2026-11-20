@@ -38,8 +38,9 @@ export function ScheduleList({
   }
 
   const row = (s: ScheduleWithCategory) => (
-    <li key={s.id} className={cn("flex min-h-16 items-center gap-3 rounded-lg border border-border bg-surface px-3 py-2", !s.is_active && "opacity-70")}>
-      <CategoryIcon icon={s.category.icon} color={s.category.color} />
+    <li key={s.id} className="flex min-h-16 items-center gap-3 rounded-lg border border-border bg-surface px-3 py-2">
+      {/* Only the icon dims for stopped schedules — text keeps full contrast. */}
+      <CategoryIcon icon={s.category.icon} color={s.category.color} className={cn(!s.is_active && "opacity-50 grayscale")} />
       <div className="min-w-0 flex-1">
         <p className="truncate text-body font-medium text-fg">{s.description || s.category.name}</p>
         <p className="truncate text-caption text-fg-muted">

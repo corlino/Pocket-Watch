@@ -24,5 +24,13 @@ export function resolveTheme(appearance: Appearance, prefersLight: boolean): "da
 export function applyAppearance(appearance: Appearance) {
   const prefersLight = window.matchMedia("(prefers-color-scheme: light)").matches;
   document.documentElement.setAttribute("data-theme", resolveTheme(appearance, prefersLight));
-  document.cookie = `${THEME_COOKIE}=${encodeURIComponent(appearance)}; path=/; max-age=31536000; SameSite=Lax; Secure`;
+  const secure = location.protocol === "https:" ? "; Secure" : "";
+  document.cookie = `${THEME_COOKIE}=${encodeURIComponent(appearance)}; path=/; max-age=31536000; SameSite=Lax${secure}`;
+}
+
+/** Reads the appearance cookie on the client. */
+export function readAppearanceCookie(): Appearance {
+  const m = document.cookie.match(new RegExp(`(?:^|; )${THEME_COOKIE}=([^;]*)`));
+  const v = m ? decodeURIComponent(m[1]) : "dark";
+  return (APPEARANCES as readonly string[]).includes(v) ? (v as Appearance) : "dark";
 }

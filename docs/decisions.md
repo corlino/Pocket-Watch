@@ -33,6 +33,26 @@ documents, this file wins.
 | Date format | MM/DD/YYYY default (DD/MM/YYYY and YYYY-MM-DD available in Profile). |
 | Timezone | `America/Vancouver`. |
 
+## Phase 4 notes
+
+- **Appearance** (dark / light / system) is saved in `preferences` and mirrored
+  to the `pw-theme` cookie at sign-in and on change, so the inline script
+  applies it before first paint on every device. "System" follows the phone
+  live.
+- **Regional**: currency, date and number format change display only; stored
+  amounts are never converted. Native date pickers keep the phone's format.
+- **CSV export** (`/api/export`): plain decimal amounts plus a signed column,
+  RFC 4180 quoting, UTF-8 BOM for Excel, and formula-injection protection.
+- **Restore** (`/api/restore` → `public.restore_backup`): validated twice
+  (browser preview, then server), requires typing RESTORE, and replaces all data
+  in one database transaction — any failure leaves everything unchanged. IDs,
+  relationships and archived states are preserved; owner always comes from the
+  session. Backups are limited to 4 MB (Vercel request limit).
+- **Accessibility**: axe (WCAG 2.2 AA rules) passes on every page in both
+  themes after fixes (dark muted text lightened to #A9C8C9; neutral savings
+  badge; light-mode Total Spent uses primary text; charts hidden from assistive
+  tech are also `inert`; skip-to-content link).
+
 ## Mobile rules (from the mobile audit)
 
 - **Form controls are 16px on phones** (14px from tablet up). iOS Safari zooms
@@ -126,7 +146,7 @@ Small text must reach 4.5:1 contrast. These Style Guide values were adjusted:
 
 | Token | Style Guide | Implemented |
 | --- | --- | --- |
-| Dark `text-muted` | #91B2B3 | #9DBDBE |
+| Dark `text-muted` | #91B2B3 | #A9C8C9 |
 | Dark `financial-expense` / negative / exceeded | #FF8B7B | #FF9686 |
 | Light `brand-primary` | #078E9C | #067A86 |
 | Light `text-muted` | #718D8D | #557171 |

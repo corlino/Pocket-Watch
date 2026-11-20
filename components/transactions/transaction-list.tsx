@@ -69,7 +69,7 @@ export function TransactionList({
 
 export function TransactionListSkeleton({ rows = 6 }: { rows?: number }) {
   return (
-    <div className="flex flex-col gap-2" aria-busy="true" aria-label="Loading transactions">
+    <div className="flex flex-col gap-2" role="status" aria-busy="true" aria-label="Loading transactions">
       {Array.from({ length: rows }, (_, i) => (
         <div key={i} className="flex h-14 items-center gap-3 rounded-md bg-surface px-3">
           <div className="size-10 animate-pulse rounded-md bg-surface-tertiary" />

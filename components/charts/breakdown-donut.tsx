@@ -44,7 +44,7 @@ export function BreakdownDonut({
     // side by side only when there's room for full category names.
     <div className="@container">
       <div className="grid grid-cols-1 items-center gap-5 @lg:grid-cols-[minmax(0,200px)_minmax(0,1fr)]">
-      <figure className="relative mx-auto aspect-square w-full max-w-[220px]" aria-hidden>
+      <figure className="relative mx-auto aspect-square w-full max-w-[220px]" aria-hidden inert>
         <ResponsiveContainer width="100%" height="100%">
           <PieChart accessibilityLayer={false}>
             <Pie

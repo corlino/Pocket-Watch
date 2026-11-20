@@ -105,7 +105,7 @@ export function CashFlowChart({
         </p>
       ) : view === "chart" ? (
         <figure aria-describedby={summaryId} className="m-0">
-          <div className="h-52 md:h-60" aria-hidden>
+          <div className="h-52 md:h-60" aria-hidden inert>
             <ResponsiveContainer width="100%" height="100%">
               <BarChart
                 data={chartData}

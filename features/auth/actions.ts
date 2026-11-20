@@ -8,6 +8,7 @@ import { serverEnv } from "@/lib/env";
 import { ACTIVITY_COOKIE, HOME_PATH, LOGIN_PATH, activityCookieOptions } from "@/lib/auth/session";
 import { requireUser } from "@/lib/auth/dal";
 import { passwordProblem } from "@/lib/auth/password";
+import { THEME_COOKIE } from "@/lib/theme";
 
 export type LoginState = { error?: string } | undefined;
 
@@ -45,7 +46,13 @@ export async function login(_prev: LoginState, formData: FormData): Promise<Logi
     return { error: "We couldn't sign you in right now. Check your connection and try again." };
   }
 
-  (await cookies()).set(ACTIVITY_COOKIE, "1", activityCookieOptions);
+  const jar = await cookies();
+  jar.set(ACTIVITY_COOKIE, "1", activityCookieOptions);
+  // Apply the saved appearance on this device from the first page.
+  const { data: prefs } = await supabase.from("preferences").select("appearance").maybeSingle();
+  if (prefs?.appearance) {
+    jar.set(THEME_COOKIE, prefs.appearance, { path: "/", maxAge: 60 * 60 * 24 * 365, sameSite: "lax", secure: process.env.NODE_ENV === "production" });
+  }
   redirect(safeNext(parsed.data.next));
 }
 

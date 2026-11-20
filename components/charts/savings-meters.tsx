@@ -22,17 +22,22 @@ export function SavingsMeters({
         return (
           <li key={r.label} className="grid grid-cols-[3.25rem_minmax(0,1fr)_4.5rem] items-center gap-3">
             <span className="text-caption text-fg-secondary">{r.label}</span>
-            <div
-              className="h-2 overflow-hidden rounded-full bg-surface-tertiary"
-              role="meter"
-              aria-label={`Savings rate, ${r.label}`}
-              aria-valuemin={0}
-              aria-valuemax={100}
-              aria-valuenow={v == null ? undefined : Math.round(width)}
-              aria-valuetext={v == null ? "No income" : formatPercent(r.rate, numberFormat)}
-            >
-              <div className="h-full rounded-full bg-chart-mint" style={{ width: `${width}%` }} />
-            </div>
+            {v == null ? (
+              // No income: there is no rate, so no meter value to report.
+              <div className="h-2 rounded-full bg-surface-tertiary" aria-hidden />
+            ) : (
+              <div
+                className="h-2 overflow-hidden rounded-full bg-surface-tertiary"
+                role="meter"
+                aria-label={`Savings rate, ${r.label}`}
+                aria-valuemin={0}
+                aria-valuemax={100}
+                aria-valuenow={Math.round(width)}
+                aria-valuetext={formatPercent(r.rate, numberFormat)}
+              >
+                <div className="h-full rounded-full bg-chart-mint" style={{ width: `${width}%` }} />
+              </div>
+            )}
             <span className={cn("money text-right text-caption font-medium", v == null ? "text-fg-muted" : v < 0 ? "text-negative" : "text-fg")}>
               {v == null ? "No income" : formatPercent(r.rate, numberFormat)}
             </span>

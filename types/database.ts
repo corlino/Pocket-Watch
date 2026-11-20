@@ -340,6 +340,7 @@ export type Database = {
           transactions_created: number
         }[]
       }
+      restore_backup: { Args: { p_backup: Json }; Returns: Json }
     }
     Enums: {
       appearance: "dark" | "light" | "system"

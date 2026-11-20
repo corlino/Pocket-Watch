@@ -96,8 +96,9 @@ async function Summary({ searchParams }: { searchParams: Search }) {
           Savings rate
           <span
             className={cn(
-              "money rounded-full px-2 py-0.5 font-semibold",
-              s.savingsRate == null ? "bg-surface text-fg-muted" : s.savingsRate.isNegative() ? "bg-negative/15 text-negative" : "bg-positive/15 text-positive",
+              // Neutral surface + coloured text keeps ≥4.5:1 in both themes.
+              "money rounded-full border border-border bg-surface px-2 py-0.5 font-semibold",
+              s.savingsRate == null ? "text-fg-muted" : s.savingsRate.isNegative() ? "text-negative" : "text-positive",
             )}
           >
             {s.savingsRate == null ? "Unavailable" : formatPercent(s.savingsRate, prefs.numberFormat)}

@@ -143,3 +143,10 @@ export async function getAutoAddedTransactions(limit = 20) {
   const unread = notificationsSeenAt ? rows.filter((r) => r.created_at > notificationsSeenAt).length : rows.length;
   return { rows, unread };
 }
+
+/** Appearance preference (dark | light | system). */
+export const getAppearance = cache(async (): Promise<"dark" | "light" | "system"> => {
+  const { supabase } = await requireUser();
+  const { data } = await supabase.from("preferences").select("appearance").maybeSingle();
+  return (data?.appearance as "dark" | "light" | "system") ?? "dark";
+});

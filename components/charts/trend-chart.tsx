@@ -64,7 +64,7 @@ export function TrendChart({
         ))}
       </ul>
       <figure className="m-0" aria-describedby={summaryId}>
-        <div className="h-52 md:h-64" aria-hidden>
+        <div className="h-52 md:h-64" aria-hidden inert>
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={chartData} margin={{ top: 8, right: 12, bottom: 0, left: -6 }} accessibilityLayer={false}>
               <CartesianGrid vertical={false} stroke="var(--pw-border)" />

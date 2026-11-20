@@ -123,7 +123,7 @@ async function Summary({ searchParams }: { searchParams: Search }) {
         </div>
         <div>
           <dt className="text-caption text-fg-muted">Total Spent</dt>
-          <dd className={cn("money font-semibold text-chart-yellow", figureSizeLg(fmt(t.spent)))}>{fmt(t.spent)}</dd>
+          <dd className={cn("money font-semibold text-chart-yellow light:text-fg", figureSizeLg(fmt(t.spent)))}>{fmt(t.spent)}</dd>
         </div>
         <div>
           <dt className="text-caption text-fg-muted">{t.remaining.isNegative() ? "Over Budget" : "Remaining"}</dt>

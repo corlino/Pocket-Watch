@@ -20,18 +20,18 @@ export default function ProfilePage() {
 
       <ProfileSection title="Account">
         <ProfileMenuItem href="/profile/security" icon={ShieldCheck} title="Security" description="Change your password" />
-        <ProfileMenuItem href="/profile" icon={UserRound} title="Edit Profile" description="Display name — coming in Phase 4" disabled />
+        <ProfileMenuItem href="/profile/edit" icon={UserRound} title="Edit Profile" description="Change your display name" />
       </ProfileSection>
 
       <ProfileSection title="Money">
         <ProfileMenuItem href="/profile/categories" icon={Shapes} title="Categories" description="Create, edit, archive and restore categories" />
         <ProfileMenuItem href="/profile/recurring" icon={Repeat} title="Recurring" description="View, edit or stop repeating transactions" />
-        <ProfileMenuItem href="/profile/data" icon={DatabaseBackup} title="Data & Backup" description="Download a full backup of your data" />
+        <ProfileMenuItem href="/profile/data" icon={DatabaseBackup} title="Data & Backup" description="Export, back up and restore your data" />
       </ProfileSection>
 
       <ProfileSection title="Preferences">
-        <ProfileMenuItem href="/profile" icon={Palette} title="Appearance" description="Light and dark mode — coming in Phase 4" disabled />
-        <ProfileMenuItem href="/profile" icon={Globe} title="Regional" description="Currency, date and number format — coming in Phase 4" disabled />
+        <ProfileMenuItem href="/profile/appearance" icon={Palette} title="Appearance" description="Dark, light or follow your phone" />
+        <ProfileMenuItem href="/profile/regional" icon={Globe} title="Regional" description="Currency, date and number format" />
       </ProfileSection>
 
       <form action={logout}>

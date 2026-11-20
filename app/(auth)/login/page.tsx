@@ -7,7 +7,7 @@ export const metadata: Metadata = { title: "Sign in" };
 
 export default function LoginPage({ searchParams }: PageProps<"/login">) {
   return (
-    <main className="relative flex min-h-dvh flex-col items-center justify-center overflow-hidden px-4 pt-safe pb-safe">
+    <main id="main" className="relative flex min-h-dvh flex-col items-center justify-center overflow-hidden px-4 pt-safe pb-safe">
       {/* Subtle teal glow — the only decorative gradient on the screen. */}
       <div
         aria-hidden
